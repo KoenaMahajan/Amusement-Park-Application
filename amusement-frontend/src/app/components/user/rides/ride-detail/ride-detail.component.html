@@ -1,0 +1,49 @@
+<div class="ride-detail" *ngIf="ride; else stateTpl">
+  <h2>{{ ride.name }}</h2>
+  <div class="header">
+    <img *ngIf="ride.photoUrl" [src]="ride.photoUrl" alt="{{ ride.name }}" />
+    <div>
+      <p>{{ ride.description }}</p>
+      <div class="meta">
+        <span>Thrill: {{ ride.thrillLevel }}</span>
+        <span>Duration: {{ ride.durationMinutes }} min</span>
+        <span *ngIf="ride.minAge">Min age: {{ ride.minAge }}</span>
+        <span *ngIf="ride.heightRequirementCm">Min height: {{ ride.heightRequirementCm }} cm</span>
+      </div>
+      <div class="status" [class.ok]="ride.isOperational" [class.bad]="!ride.isOperational">
+        {{ ride.isOperational ? 'Operational' : 'Closed' }}
+      </div>
+      <div class="meta" style="margin-top:6px">
+        <span class="fav-count">★ {{ ride.favoritesCount || 0 }} favorites</span>
+      </div>
+      <div class="fav">
+        <button (click)="toggleFavorite()" class="btn">
+          {{ isFavorite ? '★ Remove from favorites' : '☆ Add to favorites' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="ride.activeMaintenanceAlerts?.length">
+    <h3>Active maintenance alerts</h3>
+    <ul>
+      <li *ngFor="let a of ride.activeMaintenanceAlerts">
+        <strong>{{ a.title }}</strong> — {{ a.description }}
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="ride.photos?.length">
+    <h3>Gallery</h3>
+    <div class="gallery">
+      <img *ngFor="let p of ride.photos" [src]="p.photoUrl" [alt]="p.caption || ride.name" />
+    </div>
+  </div>
+</div>
+
+<ng-template #stateTpl>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+</ng-template>
+
+

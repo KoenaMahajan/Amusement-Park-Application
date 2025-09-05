@@ -1,0 +1,112 @@
+<div class="ride-mgmt">
+  <h2>Ride Management</h2>
+
+  <div *ngIf="errorMessage" class="error" (click)="clearMessages()">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success" (click)="clearMessages()">{{ successMessage }}</div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="ride-form">
+    <div>
+      <label>Name</label>
+      <input formControlName="name" />
+    </div>
+    <div>
+      <label>Description</label>
+      <textarea formControlName="description"></textarea>
+    </div>
+    <div>
+      <label>Thrill Level</label>
+      <select formControlName="thrillLevel">
+        <option *ngFor="let tl of thrillLevels" [value]="tl">{{ tl }}</option>
+      </select>
+    </div>
+    <div class="row">
+      <div>
+        <label>Min Age</label>
+        <input type="number" formControlName="minAge" />
+      </div>
+      <div>
+        <label>Max Age</label>
+        <input type="number" formControlName="maxAge" />
+      </div>
+      <div>
+        <label>Duration (min)</label>
+        <input type="number" formControlName="durationMinutes" />
+      </div>
+      <div>
+        <label>Min Height (cm)</label>
+        <input type="number" formControlName="heightRequirementCm" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Photo URL</label>
+        <input formControlName="photoUrl" />
+      </div>
+      <div>
+        <label>Video URL</label>
+        <input formControlName="videoUrl" />
+      </div>
+    </div>
+    <div>
+      <label>Location</label>
+      <input formControlName="locationDescription" />
+    </div>
+    <div>
+      <label>Safety Instructions</label>
+      <textarea formControlName="safetyInstructions"></textarea>
+    </div>
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid || loading">{{ editId ? 'Update' : 'Create' }}</button>
+      <button type="button" (click)="cancelEdit()" *ngIf="editId">Cancel</button>
+    </div>
+  </form>
+
+  <div class="list">
+    <h3>Existing Rides</h3>
+    <div *ngIf="loading">Loading...</div>
+    <table *ngIf="!loading">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Thrill</th>
+          <th>Duration</th>
+          <th>Favorites</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of rides">
+          <td>{{ r.id }}</td>
+          <td>{{ r.name }}</td>
+          <td>{{ r.thrillLevel }}</td>
+          <td>{{ r.durationMinutes }} min</td>
+          <td>
+            <span class="favorites-count" title="Number of users who favorited this ride">
+              ★ {{ r.favoritesCount || 0 }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [class.ok]="r.isOperational" [class.bad]="!r.isOperational">
+              {{ r.isOperational ? 'Operational' : 'Closed' }}
+            </span>
+          </td>
+          <td>
+            <button (click)="startEdit(r)">Edit</button>
+            <button (click)="toggleStatus(r)">{{ r.isOperational ? 'Close' : 'Open' }}</button>
+            <button (click)="remove(r.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button (click)="page = page - 1; load()" [disabled]="page === 0">Prev</button>
+      <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+      <button (click)="page = page + 1; load()" [disabled]="page + 1 >= totalPages">Next</button>
+    </div>
+  </div>
+</div>
+
+

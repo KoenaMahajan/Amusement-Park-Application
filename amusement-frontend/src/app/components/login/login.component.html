@@ -1,0 +1,195 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Navigation Header -->
+    <div class="nav-header">
+      <a routerLink="/" class="nav-link">
+        <span>←</span> Back to Home
+      </a>
+      <a routerLink="/register" class="nav-link">
+        Sign Up <span>→</span>
+      </a>
+    </div>
+
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Sign in to your amusement park account</p>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" *ngIf="!showForgotPassword && !showResetPassword">
+      <div class="form-header">
+        <h3>Sign In</h3>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        />
+        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          {{ getErrorMessage('email') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        />
+        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          {{ getErrorMessage('password') }}
+        </div>
+      </div>
+
+      <!-- Forgot Password Link -->
+      <div class="forgot-password-link">
+        <a href="#" (click)="showForgotPasswordForm($event)">Forgot your password?</a>
+      </div>
+
+      <!-- Message Display -->
+      <div class="message" *ngIf="message" [class]="messageType">
+        {{ message }}
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="loginForm.invalid || isLoading"
+      >
+        <span *ngIf="!isLoading">Sign In</span>
+        <span *ngIf="isLoading">Signing In...</span>
+      </button>
+    </form>
+
+    <!-- Forgot Password Form -->
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPasswordSubmit()" class="forgot-password-form" *ngIf="showForgotPassword && !showResetPassword">
+      <div class="form-header">
+        <h3>Reset Your Password</h3>
+        <p class="subtitle">Enter your email to receive a reset code</p>
+      </div>
+      
+      <div class="form-group">
+        <label for="forgotEmail">Email</label>
+        <input
+          type="email"
+          id="forgotEmail"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.error]="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched"
+        />
+        <div class="error-message" *ngIf="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched">
+          Email is required and must be valid.
+        </div>
+      </div>
+
+      <!-- Message Display -->
+      <div class="message" *ngIf="message" [class]="messageType">
+        {{ message }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="forgotPasswordForm.invalid || isLoading">
+          <span *ngIf="!isLoading">Send Reset Code</span>
+          <span *ngIf="isLoading">Sending...</span>
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="backToLogin()">
+          Back to Login
+        </button>
+      </div>
+    </form>
+
+    <!-- Reset Password Form -->
+    <form [formGroup]="resetPasswordForm" (ngSubmit)="onResetPasswordSubmit()" class="reset-password-form" *ngIf="showResetPassword">
+      <div class="form-header">
+        <h3>Enter New Password</h3>
+        <p class="subtitle">Enter the reset code and your new password</p>
+      </div>
+      
+      <div class="form-group">
+        <label for="resetEmail">Email</label>
+        <input
+          type="email"
+          id="resetEmail"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.error]="resetPasswordForm.get('email')?.invalid && resetPasswordForm.get('email')?.touched"
+        />
+        <div class="error-message" *ngIf="resetPasswordForm.get('email')?.invalid && resetPasswordForm.get('email')?.touched">
+          Email is required and must be valid.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="otp">Reset Code</label>
+        <input
+          type="text"
+          id="otp"
+          formControlName="otp"
+          placeholder="Enter the reset code"
+          [class.error]="resetPasswordForm.get('otp')?.invalid && resetPasswordForm.get('otp')?.touched"
+        />
+        <div class="error-message" *ngIf="resetPasswordForm.get('otp')?.invalid && resetPasswordForm.get('otp')?.touched">
+          Reset code is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="newPassword">New Password</label>
+        <input
+          type="password"
+          id="newPassword"
+          formControlName="newPassword"
+          placeholder="Enter new password"
+          [class.error]="resetPasswordForm.get('newPassword')?.invalid && resetPasswordForm.get('newPassword')?.touched"
+        />
+        <div class="error-message" *ngIf="resetPasswordForm.get('newPassword')?.invalid && resetPasswordForm.get('newPassword')?.touched">
+          Password must be at least 8 characters with uppercase, lowercase, number, and special character.
+        </div>
+        <div class="password-requirements">
+          <small>Password must contain: uppercase, lowercase, number, and special character (@$!%*?&)</small>
+        </div>
+      </div>
+
+      <!-- Message Display -->
+      <div class="message" *ngIf="message" [class]="messageType">
+        {{ message }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="resetPasswordForm.invalid || isLoading">
+          <span *ngIf="!isLoading">Reset Password</span>
+          <span *ngIf="isLoading">Resetting...</span>
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="backToLogin()">
+          Back to Login
+        </button>
+      </div>
+    </form>
+
+    <!-- Demo Section for Testing 
+    <div class="demo-section" *ngIf="!showForgotPassword && !showResetPassword">
+      <h3>🔧 Demo Access (For Testing)</h3>
+      <p>Quick access to test different user roles:</p>
+      <div class="demo-buttons">
+        <button class="btn btn-secondary" (click)="loginAsAdmin()">
+          👑 Login as Admin
+        </button>
+        <button class="btn btn-secondary" (click)="loginAsUser()">
+          👤 Login as User
+        </button>
+      </div>
+      <p class="demo-note">
+        <strong>Note:</strong> Use "admin@..." or "manager@..." in email for admin access
+      </p>
+    </div>-->
+
+    <div class="login-link" *ngIf="!showForgotPassword && !showResetPassword">
+      Don't have an account? <a routerLink="/register">Sign Up</a>
+    </div>
+  </div>
+</div> 

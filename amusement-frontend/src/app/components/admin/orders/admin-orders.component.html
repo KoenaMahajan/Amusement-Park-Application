@@ -1,0 +1,54 @@
+<div class="admin-orders">
+  <h2>Orders</h2>
+
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div class="filters">
+    <div class="search-section">
+      <label>Search by Order ID:</label>
+      <input type="number" [(ngModel)]="searchOrderId" placeholder="Enter Order ID" min="1" />
+      <button (click)="searchOrderById()" [disabled]="!searchOrderId || isLoading">Search</button>
+      <button (click)="clearSearch()" [disabled]="!searchOrderId">Clear</button>
+    </div>
+    
+    <div class="status-filter">
+      <label>Filter by status:</label>
+      <select [(ngModel)]="selectedStatus" (change)="filterByStatus()">
+        <option value="">All</option>
+        <option>PLACED</option>
+        <option>CONFIRMED</option>
+        <option>PREPARING</option>
+        <option>READY</option>
+        <option>PICKED_UP</option>
+      </select>
+    </div>
+  </div>
+
+  <table *ngIf="orders.length" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Pickup</th>
+        <th>Total</th>
+        <th>Time</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of orders">
+        <td>{{ o.id }}</td>
+        <td>{{ o.status }}</td>
+        <td>{{ o.pickupLocation }}</td>
+        <td>Rs. {{ o.totalAmount | number: '1.2-2' }}</td>
+        <td>{{ o.orderTime | date:'short' }}</td>
+        <td>
+          <button (click)="markPickedUp(o.id)" [disabled]="o.status === 'PICKED_UP'">Mark Picked Up</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+

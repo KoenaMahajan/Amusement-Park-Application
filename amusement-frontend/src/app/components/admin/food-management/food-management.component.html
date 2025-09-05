@@ -1,0 +1,41 @@
+<div class="food-admin">
+  <h2>Food Management</h2>
+
+  <form [formGroup]="form" (ngSubmit)="add()" class="form">
+    <input type="text" placeholder="Name" formControlName="name" />
+    <input type="number" placeholder="Price" formControlName="price" step="0.01" min="1" />
+    <div *ngIf="form.get('price')?.invalid && (form.get('price')?.dirty || form.get('price')?.touched)" class="error">
+      {{ getPriceErrorMessage() }}
+    </div>
+    <button type="submit" [disabled]="form.invalid || isLoading">Add</button>
+  </form>
+
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <table *ngIf="!isLoading && items.length" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>Rs. {{ item.price | number: '1.2-2' }}</td>
+        <td>
+          <button (click)="deleteItem(item.id)" [disabled]="isLoading" class="delete-btn">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+

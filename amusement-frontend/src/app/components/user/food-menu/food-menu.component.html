@@ -1,0 +1,14 @@
+<div class="food-menu">
+  <h2>Food Menu</h2>
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div class="grid" *ngIf="!isLoading && !errorMessage && items.length">
+    <div class="card" *ngFor="let item of items">
+      <div class="name">{{ item.name }}</div>
+      <div class="price">{{ item.price | currency:'INR':'symbol':'1.2-2' }}</div>
+    </div>
+  </div>
+  <div *ngIf="!isLoading && !errorMessage && !items.length">
+    No food items to display.
+  </div>
+</div>

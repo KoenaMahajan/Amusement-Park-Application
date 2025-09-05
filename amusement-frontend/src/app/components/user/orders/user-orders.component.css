@@ -1,0 +1,126 @@
+.user-orders {
+    padding: 1rem;
+    font-family: Arial, sans-serif;
+}
+
+/* Messages */
+.error {
+    color: #dc2626;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.success {
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+/* Form layout */
+.order-form {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.row {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.row label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.row input,
+.row select {
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.row input:focus,
+.row select:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Items list */
+.items {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.items-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.items-header .link {
+    color: #2563eb;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.items-header .link:hover {
+    text-decoration: underline;
+}
+
+/* Table styling */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background: white;
+}
+
+.table th {
+    background: #f3f4f6;
+    font-weight: 600;
+}
+
+.table th,
+.table td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* Submit button */
+.submit {
+    padding: 0.6rem 1rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s ease;
+}
+
+.submit:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.submit:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}

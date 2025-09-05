@@ -1,0 +1,113 @@
+<div class="maintenance-mgmt">
+  <h2>Maintenance Alerts</h2>
+
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+    <div class="row">
+      <div>
+        <label>Ride</label>
+        <select formControlName="rideId">
+          <option [ngValue]="null" disabled>Select a ride</option>
+          <option *ngFor="let r of rides" [ngValue]="r.id">{{ r.name }} (ID: {{ r.id }})</option>
+        </select>
+        <div *ngIf="form.get('rideId')?.invalid && form.get('rideId')?.touched" class="error">
+          Please select a ride
+        </div>
+      </div>
+      <div>
+        <label>Alert Type</label>
+        <select formControlName="alertType">
+          <option *ngFor="let t of alertTypes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <div>
+        <label>Priority</label>
+        <select formControlName="priority">
+          <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label>Title</label>
+      <input formControlName="title" />
+      <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="error">
+        Title is required and must be 5-200 characters
+      </div>
+    </div>
+    <div>
+      <label>Description</label>
+      <textarea formControlName="description"></textarea>
+    </div>
+    <div class="row">
+      <div>
+        <label>Start Time</label>
+        <input type="datetime-local" formControlName="startTime" />
+        <div *ngIf="form.get('startTime')?.invalid && form.get('startTime')?.touched" class="error">
+          Start time is required
+        </div>
+      </div>
+      <div>
+        <label>End Time</label>
+        <input type="datetime-local" formControlName="endTime" />
+      </div>
+    </div>
+    <div>
+      <label>Created By</label>
+      <input formControlName="createdBy" />
+    </div>
+    
+    <!-- Debug info -->
+    <div *ngIf="form.get('rideId')?.value" class="debug-info">
+      <small>Selected Ride ID: {{ form.get('rideId')?.value }}</small>
+    </div>
+    
+    <!-- Additional debug info -->
+    <div class="debug-info">
+      <small>Form Valid: {{ form.valid }}</small><br>
+      <small>Form Values: {{ form.value | json }}</small><br>
+      <small>Form Errors: {{ form.errors | json }}</small>
+    </div>
+    
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid || loading">{{ editId ? 'Update' : 'Create' }}</button>
+      <button type="button" (click)="cancelEdit()" *ngIf="editId">Cancel</button>
+    </div>
+  </form>
+
+  <h3>Active Alerts</h3>
+  <div *ngIf="loading">Loading...</div>
+  <table *ngIf="!loading">
+    <thead>
+      <tr>
+        <th>Ride</th>
+        <th>Title</th>
+        <th>Type</th>
+        <th>Priority</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Active</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of alerts">
+        <td>{{ a.rideName }}</td>
+        <td>{{ a.title }}</td>
+        <td>{{ a.alertType }}</td>
+        <td>{{ a.priority }}</td>
+        <td>{{ a.startTime }}</td>
+        <td>{{ a.endTime || '-' }}</td>
+        <td>{{ a.isActive ? 'Yes' : 'No' }}</td>
+        <td>
+          <button (click)="startEdit(a)">Edit</button>
+          <button (click)="toggleActive(a)">{{ a.isActive ? 'Deactivate' : 'Activate' }}</button>
+          <button (click)="remove(a.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+

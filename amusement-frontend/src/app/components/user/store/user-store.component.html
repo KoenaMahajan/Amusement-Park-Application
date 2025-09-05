@@ -1,0 +1,50 @@
+<div class="user-store">
+  <h2>Store</h2>
+
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <div class="cart-summary" *ngIf="cartCount || cartTotal">
+    <div>
+      <strong>Cart:</strong> {{ cartCount }} item(s)
+    </div>
+    <div>
+      <strong>Total:</strong> Rs. {{ cartTotal | number:'1.2-2' }}
+    </div>
+    <div class="actions">
+      <a class="btn" [routerLink]="['/user/checkout']">Checkout</a>
+      <button class="btn" (click)="clearCart()">Clear Cart</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Food</h3>
+    <div class="grid" *ngIf="food.length; else noFood">
+      <div class="card" *ngFor="let f of food">
+        <div class="name">{{ f.name }}</div>
+        <div class="price">Rs. {{ f.price | number:'1.2-2' }}</div>
+        <button (click)="addFoodToCart(f)">Add to Cart</button>
+      </div>
+    </div>
+    <ng-template #noFood>
+      <div>No food items available.</div>
+    </ng-template>
+  </div>
+
+  <div class="section">
+    <h3>Merch</h3>
+    <div class="grid" *ngIf="merch.length; else noMerch">
+      <div class="card" *ngFor="let m of merch">
+        <div class="name">{{ m.name }}</div>
+        <div class="price">Rs. {{ m.price | number:'1.2-2' }}</div>
+        <button (click)="addMerchToCart(m)">Add to Cart</button>
+      </div>
+    </div>
+    <ng-template #noMerch>
+      <div>No merchandise available.</div>
+    </ng-template>
+  </div>
+</div>
+
+

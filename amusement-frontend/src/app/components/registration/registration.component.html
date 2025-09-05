@@ -1,0 +1,104 @@
+<div class="registration-container">
+  <div class="registration-card">
+    <!-- Navigation Header -->
+    <div class="nav-header">
+      <a routerLink="/" class="nav-link">
+        <span>←</span> Back to Home
+      </a>
+      <a routerLink="/login" class="nav-link">
+        Sign In <span>→</span>
+      </a>
+    </div>
+
+    <h2>Create Your Account</h2>
+    <p class="subtitle">Join our amusement park community!</p>
+
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form">
+      
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email" 
+          placeholder="Enter your email"
+          [class.error]="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched"
+        >
+        <div class="error-message" *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched">
+          {{ getErrorMessage('email') }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          placeholder="Enter your password"
+          [class.error]="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched"
+        >
+        <div class="error-message" *ngIf="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched">
+          {{ getErrorMessage('password') }}
+        </div>
+        <div class="password-requirements">
+          <small>Password must contain: uppercase, lowercase, number, and special character (min 8 characters)</small>
+        </div>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          formControlName="confirmPassword" 
+          placeholder="Confirm your password"
+          [class.error]="registrationForm.get('confirmPassword')?.invalid && registrationForm.get('confirmPassword')?.touched"
+        >
+        <div class="error-message" *ngIf="registrationForm.get('confirmPassword')?.invalid && registrationForm.get('confirmPassword')?.touched">
+          {{ getErrorMessage('confirmPassword') }}
+        </div>
+      </div>
+
+      <!-- ✅ RESTORED: Role selection dropdown -->
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" formControlName="role" class="role-select">
+          <option value="USER">User</option>
+          <option value="MEMBER">Member</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+      </div>
+
+      <!-- Message Display -->
+      <div class="message" *ngIf="message" [class]="messageType">
+        {{ message }}
+      </div>
+
+      <!-- OTP Display for Testing -->
+      <div *ngIf="showOtp" class="otp-display">
+        <h4>🧪 Test OTP (Development Only)</h4>
+        <p>Your OTP is: <strong>{{ generatedOtp }}</strong></p>
+        <p><small>This will be automatically sent to your email in production.</small></p>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="submit-btn" 
+        [disabled]="registrationForm.invalid || isLoading"
+      >
+        <span *ngIf="!isLoading">Create Account</span>
+        <span *ngIf="isLoading">Creating Account...</span>
+      </button>
+
+      <!-- Login Link -->
+      <div class="login-link">
+        Already have an account? <a routerLink="/login">Sign In</a>
+      </div>
+    </form>
+  </div>
+</div> 

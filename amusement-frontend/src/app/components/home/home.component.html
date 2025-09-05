@@ -1,0 +1,142 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+
+     <video #bgVideo autoplay muted loop playsinline class="background-video">
+  <source src="https://d22pimhl2qmbj7.cloudfront.net/public/Mobile_WONDERLA_Signature_Video_9x16_50b80482cc.mp4" type="video/mp4" />
+</video>
+
+
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Welcome to <span class="highlight">Amusement Park</span>
+      </h1>
+      <p class="hero-subtitle">
+        Experience the thrill of a lifetime with our exciting rides, 
+        entertainment, and unforgettable memories
+      </p>
+      
+      <!-- User Status Display -->
+      <div class="user-status" *ngIf="isLoggedIn()">
+        <div class="status-card">
+          <div class="status-icon" [class.admin]="isAdmin()">
+            {{ isAdmin() ? '👑' : '👤' }}
+          </div>
+          <div class="status-info">
+            <h4>Welcome, {{ getCurrentUser()?.name }}!</h4>
+            <p>{{ isAdmin() ? 'Admin Dashboard' : 'User Dashboard' }}</p>
+          </div>
+          <button class="btn btn-primary" (click)="navigateToDashboard()">
+            Go to Dashboard
+          </button>
+          <button class="btn btn-secondary" (click)="logout()">
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Guest Actions -->
+      <div class="hero-buttons" *ngIf="!isLoggedIn()">
+        <button class="btn btn-primary" (click)="navigateToRegister()">
+          Get Started
+        </button>
+        <button class="btn btn-primary" (click)="navigateToLogin()">
+          Sign In
+        </button>
+      </div>
+
+      <!-- Demo Section for Testing -->
+      <div class="demo-section" *ngIf="!isLoggedIn()">
+        
+        <div class="demo-buttons">
+          
+          <a routerLink="/test-connection" class="btn btn-secondary">
+            🔌 Test Backend Connection
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+  <div class="floating-elements">
+    <img
+      src="https://www.travelsintranslation.com/wp-content/uploads/2021/11/lkfhjw.jpg"
+      alt="Amusement Park"
+      class="hero-image"
+    />
+  </div>
+</div>
+
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <h2 class="section-title">Why Choose Us?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎢</div>
+        <h3>Thrilling Rides</h3>
+        <p>Experience adrenaline-pumping roller coasters and exciting attractions</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎪</div>
+        <h3>Live Entertainment</h3>
+        <p>Enjoy spectacular shows and performances throughout the day</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🍔</div>
+        <h3>Delicious Food</h3>
+        <p>Savor a variety of cuisines and treats from around the world</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Customer Feedback</h3>
+        <p>We value your opinion and continuously improve based on your suggestions</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Links / Cards -->
+  <section class="features-section">
+    <!--<h2 class="section-title">Quick Links</h2>-->
+    <div class="features-grid">
+      
+      <a *ngIf="isLoggedIn()" class="feature-card" routerLink="/user/orders" style="text-decoration:none;color:inherit">
+        <div class="feature-icon">🧾</div>
+        <h3>My Orders</h3>
+        <p>View and track your orders</p>
+      </a>
+      
+      <a *ngIf="isAdmin()" class="feature-card" routerLink="/admin/rides" style="text-decoration:none;color:inherit">
+        <div class="feature-icon">🎢</div>
+        <h3>Ride Management</h3>
+        <p>Create, edit, and manage rides</p>
+      </a>
+      <a *ngIf="isAdmin()" class="feature-card" routerLink="/admin/maintenance" style="text-decoration:none;color:inherit">
+        <div class="feature-icon">🧰</div>
+        <h3>Maintenance</h3>
+        <p>Schedule and manage maintenance alerts</p>
+      </a>
+      <a *ngIf="isAdmin()" class="feature-card" routerLink="/admin/tickets" style="text-decoration:none;color:inherit">
+        <div class="feature-icon">🎟</div>
+        <h3>Ticket Management</h3>
+        <p>Manage ticket types and view all bookings</p>
+      </a>
+      <a *ngIf="isLoggedIn() && !isAdmin()" class="feature-card" routerLink="/user/tickets" style="text-decoration:none;color:inherit">
+        <div class="feature-icon">🎫</div>
+        <h3>Book Tickets</h3>
+        <p>Book your tickets for an amazing day</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Ready for an Adventure?</h2>
+      <p>Join thousands of visitors who have experienced the magic of our amusement park</p>
+      <button class="btn btn-primary btn-large" (click)="navigateToRegister()">
+        Create Your Account
+      </button>
+    </div>
+  </section>
+</div>

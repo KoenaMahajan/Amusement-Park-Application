@@ -1,0 +1,92 @@
+<div class="favorites-management">
+  <h2>Favorites Management</h2>
+
+  <div *ngIf="errorMessage" class="error" (click)="clearMessages()">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success" (click)="clearMessages()">{{ successMessage }}</div>
+
+  <!-- Statistics Section -->
+  <div class="stats-section">
+    <h3>Favorites Statistics</h3>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">{{ totalUsers }}</div>
+        <div class="stat-label">Total Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ totalFavorites }}</div>
+        <div class="stat-label">Total Favorites</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ avgFavoritesPerUser | number:'1.1-1' }}</div>
+        <div class="stat-label">Avg Favorites per User</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Rides Section -->
+  <div class="popular-rides-section">
+    <h3>Most Popular Rides</h3>
+    <div *ngIf="loading" class="loading">Loading popular rides...</div>
+    <div class="popular-rides-grid" *ngIf="!loading">
+      <div class="popular-ride-card" *ngFor="let ride of popularRides">
+        <img *ngIf="ride.photoUrl" [src]="ride.photoUrl" [alt]="ride.name" />
+        <div class="ride-info">
+          <h4>{{ ride.name }}</h4>
+          <p>{{ ride.description }}</p>
+          <div class="ride-meta">
+            <span class="thrill-level">{{ ride.thrillLevel }}</span>
+            <span class="favorites-count">★ {{ ride.favoritesCount || 0 }} favorites</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Favorites Section -->
+  <div class="manage-favorites-section">
+    <h3>Manage User Favorites</h3>
+    
+    <div class="filter-controls">
+      <label for="ride-select">Select Ride:</label>
+      <select id="ride-select" [(ngModel)]="selectedRideId" (change)="onRideChange()">
+        <option [ngValue]="null">Choose a ride...</option>
+        <option *ngFor="let ride of rides" [ngValue]="ride.id">
+          {{ ride.name }} (ID: {{ ride.id }})
+        </option>
+      </select>
+    </div>
+
+    <div *ngIf="selectedRideId && favorites.length > 0" class="favorites-list">
+      <h4>Users who favorited this ride:</h4>
+      <div class="favorites-table">
+        <table>
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Ride Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fav of favorites">
+              <td>{{ fav.userId }}</td>
+              <td>{{ fav.ride.name }}</td>
+              <td>
+                <button 
+                  class="remove-btn" 
+                  (click)="removeFavorite(fav)"
+                  title="Remove this favorite">
+                  Remove
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="selectedRideId && favorites.length === 0 && !loading" class="no-favorites">
+      <p>No users have favorited this ride yet.</p>
+    </div>
+  </div>
+</div>

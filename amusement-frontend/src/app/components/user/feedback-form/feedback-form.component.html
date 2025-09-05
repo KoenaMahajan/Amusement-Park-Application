@@ -1,0 +1,38 @@
+<div class="feedback-form">
+  <h2>Share Your Feedback</h2>
+
+  <div *ngIf="message" class="message" [ngClass]="messageType">{{ message }}</div>
+
+  <form [formGroup]="feedbackForm" (ngSubmit)="submit()">
+    <div class="form-row">
+      <label for="rideRating">Ride Rating (1-5)</label>
+      <input id="rideRating" type="number" formControlName="rideRating" min="1" max="5" />
+    </div>
+
+    <div class="form-row">
+      <label for="cleanlinessRating">Cleanliness Rating (1-5)</label>
+      <input id="cleanlinessRating" type="number" formControlName="cleanlinessRating" min="1" max="5" />
+    </div>
+
+    <div class="form-row">
+      <label for="staffBehaviorRating">Staff Behavior Rating (1-5)</label>
+      <input id="staffBehaviorRating" type="number" formControlName="staffBehaviorRating" min="1" max="5" />
+    </div>
+
+    <div class="form-row">
+      <label for="foodQualityRating">Food Quality Rating (1-5)</label>
+      <input id="foodQualityRating" type="number" formControlName="foodQualityRating" min="1" max="5" />
+    </div>
+
+    <div class="form-row">
+      <label for="comments">Comments (optional)</label>
+      <textarea id="comments" formControlName="comments" rows="4"></textarea>
+    </div>
+
+    <button type="submit" [disabled]="isSubmitting || feedbackForm.invalid">
+      {{ isSubmitting ? 'Submitting...' : 'Submit Feedback' }}
+    </button>
+  </form>
+</div>
+
+

@@ -1,0 +1,17 @@
+<div class="chat">
+  <h2>Assistant</h2>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div class="history">
+    <div class="msg" *ngFor="let m of messages">
+      <div class="user">You: {{ m.userMessage }}</div>
+      <div class="bot">Bot: {{ m.botReply }}</div>
+      <div class="time">{{ m.createdAt | date:'short' }}</div>
+    </div>
+  </div>
+  <div class="input-row">
+    <input [(ngModel)]="input" placeholder="Type your question..." (keyup.enter)="send()" />
+    <button (click)="send()" [disabled]="isSending || !input.trim()">Send</button>
+  </div>
+</div>
+
+

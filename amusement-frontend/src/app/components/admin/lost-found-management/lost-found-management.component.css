@@ -1,0 +1,138 @@
+.lf-admin {
+    padding: 16px;
+    font-family: Arial, sans-serif;
+}
+
+/* Header section */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.header h2 {
+    margin: 0;
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.filters input {
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filters button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #3b82f6;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.filters button:hover {
+    background-color: #2563eb;
+}
+
+/* Table styling */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table th {
+    background-color: #f3f4f6;
+    font-weight: bold;
+}
+
+.table th,
+.table td {
+    border: 1px solid #e2e8f0;
+    padding: 8px;
+    text-align: left;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* Status coloring */
+.table td:nth-child(4) {
+    font-weight: bold;
+}
+
+.table td:nth-child(4):contains("FOUND") {
+    color: #16a34a;
+}
+
+.table td:nth-child(4):contains("RETURNED") {
+    color: #2563eb;
+}
+
+/* Action buttons */
+.actions button {
+    margin-right: 6px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.actions button:nth-child(1) {
+    background-color: #16a34a;
+    color: white;
+}
+
+.actions button:nth-child(1):hover {
+    background-color: #15803d;
+}
+
+.actions button:nth-child(2) {
+    background-color: #2563eb;
+    color: white;
+}
+
+.actions button:nth-child(2):hover {
+    background-color: #1d4ed8;
+}
+
+.actions button:nth-child(3) {
+    background-color: #dc2626;
+    color: white;
+}
+
+.actions button:nth-child(3):hover {
+    background-color: #b91c1c;
+}
+
+/* Messages and loading state */
+.loading {
+    padding: 8px;
+    font-weight: bold;
+}
+
+.message {
+    padding: 8px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.empty {
+    padding: 8px;
+    color: #64748b;
+    font-style: italic;
+}

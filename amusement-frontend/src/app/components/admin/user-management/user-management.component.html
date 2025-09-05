@@ -1,0 +1,117 @@
+<div class="user-management-container">
+  <div class="header">
+    <h1>👥 User Management</h1>
+    <p>Manage user accounts and permissions</p>
+    <button class="btn btn-secondary" (click)="navigateToAdminDashboard()">
+      ← Back to Admin Dashboard
+    </button>
+  </div>
+
+  <!-- Message Display -->
+  <div class="message" *ngIf="message" [class]="messageType">
+    {{ message }}
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading users...</p>
+  </div>
+
+  <!-- Users Table -->
+  <div class="users-table" *ngIf="!isLoading && users.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Verified</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phoneNumber }}</td>
+          <td>
+            <span class="role-badge" [class]="user.role.toLowerCase()">
+              {{ user.role }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge" [class]="user.verified ? 'verified' : 'unverified'">
+              {{ user.verified ? '✓' : '✗' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-small btn-primary" (click)="editUser(user)">
+              Edit
+            </button>
+            <button class="btn btn-small btn-danger" (click)="deleteUser(user)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No Users Message -->
+  <div class="no-users" *ngIf="!isLoading && users.length === 0">
+    <p>No users found.</p>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal-overlay" *ngIf="editingUser" (click)="cancelEdit()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Edit User: {{ editingUser.name }}</h3>
+        <button class="close-btn" (click)="cancelEdit()">×</button>
+      </div>
+
+      <form [formGroup]="editForm" (ngSubmit)="saveUser()" class="edit-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" formControlName="name"
+            [class.error]="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+          <div class="error-message" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+            {{ getErrorMessage('name') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input type="tel" id="phoneNumber" formControlName="phoneNumber"
+            [class.error]="editForm.get('phoneNumber')?.invalid && editForm.get('phoneNumber')?.touched">
+          <div class="error-message"
+            *ngIf="editForm.get('phoneNumber')?.invalid && editForm.get('phoneNumber')?.touched">
+            {{ getErrorMessage('phoneNumber') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select id="role" formControlName="role">
+            <option value="USER">User</option>
+            <option value="MEMBER">Member</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

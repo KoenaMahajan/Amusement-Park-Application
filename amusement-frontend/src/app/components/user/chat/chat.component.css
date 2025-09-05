@@ -1,0 +1,98 @@
+.chat {
+    max-width: 700px;
+    margin: 24px auto;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+/* History box */
+.history {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 12px;
+    background: #f9fafb;
+}
+
+/* Each message */
+.msg {
+    padding: 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.msg:last-child {
+    border-bottom: none;
+}
+
+.user {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.bot {
+    margin-top: 4px;
+    color: #334155;
+    padding: 6px 8px;
+    background: #e0f2fe;
+    border-radius: 6px;
+}
+
+.time {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* Input area */
+.input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.input-row input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.input-row input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.input-row button {
+    padding: 10px 14px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.input-row button:hover {
+    background: #1d4ed8;
+}
+
+.input-row button:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}
+
+/* Error message */
+.error {
+    padding: 8px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    margin-bottom: 8px;
+    border-radius: 6px;
+}

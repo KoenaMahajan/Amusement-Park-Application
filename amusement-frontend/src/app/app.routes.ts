@@ -1,0 +1,84 @@
+import { Routes } from '@angular/router';
+import { HomeComponent } from './components/home/home.component';
+import { RegistrationComponent } from './components/registration/registration.component';
+import { LoginComponent } from './components/login/login.component';
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { UserManagementComponent } from './components/admin/user-management/user-management.component';
+import { MembershipManagementComponent } from './components/admin/membership-management/membership-management.component';
+import { UserDashboardComponent } from './components/user/user-dashboard/user-dashboard.component';
+import { OtpVerificationComponent } from './components/otp-verification/otp-verification.component';
+import { TestConnectionComponent } from './components/test-connection/test-connection.component';
+import { FeedbackFormComponent } from './components/user/feedback-form/feedback-form.component';
+import { FeedbackManagementComponent } from './components/admin/feedback-management/feedback-management.component';
+import { ReportIssueComponent } from './components/user/report-issue/report-issue.component';
+import { IssueManagementComponent } from './components/admin/issue-management/issue-management.component';
+import { ChatbotManagementComponent } from './components/admin/chatbot-management/chatbot-management.component';
+import { ChatComponent } from './components/user/chat/chat.component';
+import { FeedbackAnalyticsComponent } from './components/admin/feedback-analytics/feedback-analytics.component';
+import { ReportLostComponent } from './components/user/lost-found/report-lost/report-lost.component';
+import { MyReportsComponent } from './components/user/lost-found/my-reports/my-reports.component';
+import { FoundItemsComponent } from './components/user/lost-found/found-items/found-items.component';
+import { LostFoundManagementComponent } from './components/admin/lost-found-management/lost-found-management.component';
+import { MerchStoreComponent } from './components/user/merch-store/merch-store.component';
+import { MerchManagementComponent } from './components/admin/merch-management/merch-management.component';
+import { UserOrdersComponent } from './components/user/orders/user-orders.component';
+import { AdminOrdersComponent } from './components/admin/orders/admin-orders.component';
+import { FoodManagementComponent } from './components/admin/food-management/food-management.component';
+import { FoodMenuComponent } from './components/user/food-menu/food-menu.component';
+import { RideListComponent } from './components/user/rides/ride-list/ride-list.component';
+import { RideDetailComponent } from './components/user/rides/ride-detail/ride-detail.component';
+import { RideManagementComponent } from './components/admin/ride-management/ride-management.component';
+import { MaintenanceManagementComponent } from './components/admin/maintenance-management/maintenance-management.component';
+import { UserFavoritesComponent } from './components/user/favorites/user-favorites.component';
+import { TicketManagementComponent } from './components/admin/ticket-management/ticket-management.component';
+import { TicketBookingComponent } from './components/user/ticket-booking/ticket-booking.component';
+import { UserStoreComponent } from './components/user/store/user-store.component';
+import { UserCheckoutComponent } from './components/user/checkout/user-checkout.component';
+import { FavoritesManagementComponent } from './components/admin/favorites-management/favorites-management.component';
+
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent },
+  { path: 'register', component: RegistrationComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'verify-otp/:email', component: OtpVerificationComponent },
+  { path: 'verify-otp', component: OtpVerificationComponent },
+  { path: 'test-connection', component: TestConnectionComponent },
+  
+  // Admin Routes
+  { path: 'admin/dashboard', component: AdminDashboardComponent },
+  { path: 'admin/users', component: UserManagementComponent },
+  { path: 'admin/memberships', component: MembershipManagementComponent },
+  { path: 'admin/tickets', component: TicketManagementComponent },
+  { path: 'admin/feedback', component: FeedbackManagementComponent },
+  { path: 'admin/issues', component: IssueManagementComponent },
+  { path: 'admin/chatbot', component: ChatbotManagementComponent },
+  { path: 'admin/feedback-analytics', component: FeedbackAnalyticsComponent },
+  { path: 'admin/lost-found', component: LostFoundManagementComponent },
+  { path: 'admin/merch', component: MerchManagementComponent },
+  { path: 'admin/orders', component: AdminOrdersComponent },
+  { path: 'admin/food-management', component: FoodManagementComponent },
+  { path: 'admin/rides', component: RideManagementComponent },
+  { path: 'admin/maintenance', component: MaintenanceManagementComponent },
+  { path: 'admin/favorites', component: FavoritesManagementComponent },
+  
+  // User Routes
+  { path: 'user/dashboard', component: UserDashboardComponent },
+  { path: 'user/tickets', component: TicketBookingComponent },
+  { path: 'user/feedback', component: FeedbackFormComponent },
+  { path: 'user/report-issue', component: ReportIssueComponent },
+  { path: 'user/chat', component: ChatComponent },
+  { path: 'user/lost-found/report', component: ReportLostComponent },
+  { path: 'user/lost-found/my-reports', component: MyReportsComponent },
+  { path: 'user/lost-found/found', component: FoundItemsComponent },
+  { path: 'user/merch', component: MerchStoreComponent },
+  { path: 'user/store', component: UserStoreComponent },
+  { path: 'user/checkout', component: UserCheckoutComponent },
+  { path: 'user/orders', component: UserOrdersComponent },
+  { path: 'user/food-menu', component: FoodMenuComponent },
+  { path: 'user/favorites', component: UserFavoritesComponent },
+  { path: 'user/rides', component: RideListComponent },
+  { path: 'user/rides/:id', component: RideDetailComponent },
+  
+  { path: '**', redirectTo: '' }
+];

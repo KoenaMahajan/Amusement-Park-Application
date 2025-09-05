@@ -1,0 +1,130 @@
+.issues-admin {
+    padding: 16px;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.filters select {
+    padding: 6px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+}
+
+.filters button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filters button:first-of-type {
+    background: #2563eb;
+    color: white;
+}
+
+.filters button:first-of-type:hover {
+    background: #1d4ed8;
+}
+
+.filters button:last-of-type {
+    background: #ef4444;
+    color: white;
+}
+
+.filters button:last-of-type:hover {
+    background: #dc2626;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: #f1f5f9;
+    font-weight: bold;
+}
+
+.table th,
+.table td {
+    border: 1px solid #e2e8f0;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.table tbody tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.actions button {
+    margin-right: 6px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.actions button:nth-child(1) {
+    background: #cfb23d;
+    color: #000;
+}
+
+.actions button:nth-child(1):hover {
+    background: #d0cbba;
+}
+
+.actions button:nth-child(2) {
+    background: #26874a;
+    color: white;
+}
+
+.actions button:nth-child(2):hover {
+    background: #78a488;
+}
+
+.actions button:nth-child(3) {
+    background: #f35353;
+    color: white;
+}
+
+.actions button:nth-child(3):hover {
+    background: #d58f8f;
+}
+
+.actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.loading {
+    padding: 8px;
+    font-style: italic;
+}
+
+.message {
+    padding: 8px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.empty {
+    padding: 8px;
+    color: #64748b;
+    font-style: italic;
+}

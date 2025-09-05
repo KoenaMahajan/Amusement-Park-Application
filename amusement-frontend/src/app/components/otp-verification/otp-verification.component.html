@@ -1,0 +1,69 @@
+<div class="otp-verification">
+  <div class="container">
+    <div class="verification-card">
+      <div class="header">
+        <h1>Verify Your Email</h1>
+        <p>We've sent a 6-digit OTP to <strong>{{ email }}</strong></p>
+      </div>
+
+      <!-- Message Display -->
+      <div *ngIf="message" class="message" [ngClass]="messageType">
+        {{ message }}
+      </div>
+
+      <!-- OTP Form -->
+      <form [formGroup]="otpForm" (ngSubmit)="onSubmit()" class="otp-form">
+        <div class="form-group">
+          <label for="otp">Enter OTP</label>
+          <input
+            type="text"
+            id="otp"
+            formControlName="otp"
+            placeholder="Enter 6-digit OTP"
+            maxlength="6"
+            class="form-control"
+            [ngClass]="{'error': otpForm.get('otp')?.invalid && otpForm.get('otp')?.touched}"
+          />
+          <div *ngIf="otpForm.get('otp')?.invalid && otpForm.get('otp')?.touched" class="error-message">
+            {{ getErrorMessage('otp') }}
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="otpForm.invalid || isLoading">
+          <span *ngIf="isLoading">Verifying...</span>
+          <span *ngIf="!isLoading">Verify OTP</span>
+        </button>
+      </form>
+
+      <!-- Resend OTP Section -->
+      <div class="resend-section">
+        <p>Didn't receive the OTP?</p>
+        
+        <div *ngIf="!showResendButton" class="countdown">
+          <p>Resend available in: <strong>{{ formatCountdown() }}</strong></p>
+        </div>
+        
+        <button 
+          *ngIf="showResendButton"
+          (click)="resendOtp()" 
+          class="btn btn-outline"
+          [disabled]="isLoading">
+          Resend OTP
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="navigation-links">
+        <button (click)="navigateToRegistration()" class="btn btn-link">
+          Back to Registration
+        </button>
+        <button (click)="navigateToLogin()" class="btn btn-link">
+          Back to Login
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

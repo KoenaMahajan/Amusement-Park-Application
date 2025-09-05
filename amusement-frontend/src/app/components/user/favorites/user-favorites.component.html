@@ -1,0 +1,49 @@
+<div class="favorites">
+  <h2>My Favorite Rides</h2>
+  
+  <div *ngIf="errorMessage" class="error" (click)="clearMessages()">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success" (click)="clearMessages()">{{ successMessage }}</div>
+  
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <div class="grid" *ngIf="!loading">
+    <div class="card" *ngFor="let fav of favorites">
+      <img *ngIf="fav.ride.photoUrl" [src]="fav.ride.photoUrl" [alt]="fav.ride.name" />
+      <div class="content">
+        <h3><a [routerLink]="['/user/rides', fav.ride.id]">{{ fav.ride.name }}</a></h3>
+        <p>{{ fav.ride.description }}</p>
+        
+        <div class="meta">
+          <span>Thrill: {{ fav.ride.thrillLevel }}</span>
+          <span>Duration: {{ fav.ride.durationMinutes }} min</span>
+          <span class="fav-count">★ {{ fav.ride.favoritesCount || 0 }}</span>
+          <span *ngIf="fav.addedAt" class="added-date">Added: {{ fav.addedAt | date:'short' }}</span>
+        </div>
+        
+        <div class="notes-section">
+          <label for="notes-{{ fav.id }}">Notes:</label>
+          <textarea 
+            #notesInput
+            id="notes-{{ fav.id }}"
+            [value]="fav.notes || ''"
+            placeholder="Add notes about this ride..."
+            (blur)="updateNotes(fav, notesInput.value)"
+            rows="2"></textarea>
+        </div>
+        
+        <div class="actions">
+          <button class="remove-btn" (click)="removeFavorite(fav)">Remove from Favorites</button>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="!favorites.length && !loading" class="empty">
+      <p>No favorites yet.</p>
+      <p>Start exploring rides and add your favorites!</p>
+      <a routerLink="/user/rides" class="browse-link">Browse Rides</a>
+    </div>
+  </div>
+</div>
+
+
+

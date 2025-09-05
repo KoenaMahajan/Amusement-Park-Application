@@ -1,0 +1,80 @@
+<div class="checkout">
+  <h2>Checkout</h2>
+
+  <div *ngIf="isLoading">Processing your order...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">
+    {{ successMessage }}
+    <div class="success-actions">
+      <a class="btn btn-primary" [routerLink]="['/user/dashboard']">Go to Dashboard</a>
+      <a class="btn btn-secondary" [routerLink]="['/user/orders']">View Orders</a>
+    </div>
+  </div>
+
+  <div class="order-summary">
+    <h3>Order Summary</h3>
+    <div class="summary-stats">
+      <div class="stat">
+        <span class="label">Total Items:</span>
+        <span class="value">{{ totalItems }}</span>
+      </div>
+      <div class="stat">
+        <span class="label">Total Amount:</span>
+        <span class="value">Rs. {{ totalAmount | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="items-list">
+      <h4>Items in Cart:</h4>
+      <div class="item" *ngFor="let item of cartItems">
+        <div class="item-info">
+          <span class="name">{{ item.itemName }}</span>
+          <span class="type">({{ item.itemType }})</span>
+        </div>
+        <div class="item-details">
+          <span class="quantity">Qty: {{ item.quantity }}</span>
+          <span class="price">Rs. {{ item.unitPrice | number:'1.2-2' }}</span>
+          <span class="subtotal">Rs. {{ (item.quantity * item.unitPrice) | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="checkoutForm" (ngSubmit)="placeOrder()" class="checkout-form">
+    <div class="form-group">
+      <label for="pickupLocation">Pickup Location *</label>
+      <select id="pickupLocation" formControlName="pickupLocation">
+        <option value="" disabled>Select pickup location</option>
+        <option value="Main Gate">Main Gate</option>
+        <option value="Gift Shop">Gift Shop</option>
+        <option value="Zone A - Burger Shack">Zone A - Burger Shack</option>
+        <option value="Zone B - Cold Drinks Corner">Zone B - Cold Drinks Corner</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="couponCode">Coupon Code (Optional)</label>
+      <input 
+        type="text" 
+        id="couponCode" 
+        formControlName="couponCode" 
+        placeholder="Enter coupon code"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="goBackToStore()">
+        Back to Store
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="checkoutForm.invalid || isLoading || cartItems.length === 0"
+      >
+        <span *ngIf="!isLoading">Place Order</span>
+        <span *ngIf="isLoading">Processing...</span>
+      </button>
+    </div>
+  </form>
+</div>
+

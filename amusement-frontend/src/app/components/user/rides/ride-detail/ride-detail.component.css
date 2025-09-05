@@ -1,0 +1,100 @@
+.ride-detail {
+    padding: 16px;
+    font-family: Arial, sans-serif;
+}
+
+/* Header section with image + info */
+.header {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.header img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+}
+
+/* Meta info tags */
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: #555;
+    margin-top: 6px;
+}
+
+.meta span {
+    background: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+/* Status badges */
+.status {
+    margin-top: 8px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #fff;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.status.ok {
+    background: #16a34a;
+}
+
+.status.bad {
+    background: #dc2626;
+}
+
+/* Favorite section */
+.fav {
+    margin-top: 10px;
+}
+
+.btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.btn:hover {
+    background: #1d4ed8;
+}
+
+/* Gallery grid */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.gallery img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease;
+}
+
+.gallery img:hover {
+    transform: scale(1.03);
+}
+
+/* Error messages */
+.error {
+    color: #dc2626;
+    font-weight: bold;
+}

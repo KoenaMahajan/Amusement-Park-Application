@@ -1,0 +1,7 @@
+.analytics { padding: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.card { padding: 16px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; }
+.label { color: #475569; margin-bottom: 6px; }
+.value { font-size: 20px; font-weight: 700; color: #0f172a; }
+.error { padding: 8px; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; margin-bottom: 8px; }
+

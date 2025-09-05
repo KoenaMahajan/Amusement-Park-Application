@@ -1,0 +1,225 @@
+<div class="membership-container">
+  <div class="page-header">
+    <h1>Membership Management</h1>
+    <button class="btn btn-primary" (click)="showAddPlanForm()">
+      <i class="fas fa-plus"></i> Add New Plan
+    </button>
+  </div>
+
+  <!-- Statistics Overview -->
+  <div class="stats-overview" *ngIf="userMemberships.length > 0">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+          <h3>Total Revenue</h3>
+          <p class="stat-number">${{ getTotalRevenue().toFixed(2) }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <h3>Active Members</h3>
+          <p class="stat-number">{{ getActiveMembersCount() }}</p>
+        </div>
+      </div>
+      
+      
+      
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <h3>Total Plans</h3>
+          <p class="stat-number">{{ membershipPlans.length }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Display -->
+  <div class="message-section" *ngIf="message">
+    <div class="message" [class]="'message-' + messageType">
+      {{ message }}
+    </div>
+  </div>
+
+  <!-- Add/Edit Plan Form -->
+  <div class="form-section" *ngIf="showAddForm || editingPlan">
+    <div class="form-card">
+      <h3>{{ editingPlan ? 'Edit' : 'Add' }} Membership Plan</h3>
+      <form [formGroup]="planForm" (ngSubmit)="onSubmit()" class="plan-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Plan Name</label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name" 
+              placeholder="Enter plan name"
+              class="form-control"
+              [class.error]="planForm.get('name')?.invalid && planForm.get('name')?.touched"
+            >
+            <div class="error-message" *ngIf="planForm.get('name')?.invalid && planForm.get('name')?.touched">
+              {{ getErrorMessage('name') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="price">Price (Rs)</label>
+            <input 
+              type="number" 
+              id="price" 
+              formControlName="price" 
+              placeholder="0.00"
+              step="0.01"
+              class="form-control"
+              [class.error]="planForm.get('price')?.invalid && planForm.get('price')?.touched"
+            >
+            <div class="error-message" *ngIf="planForm.get('price')?.invalid && planForm.get('price')?.touched">
+              {{ getErrorMessage('price') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea 
+            id="description" 
+            formControlName="description" 
+            placeholder="Enter plan description"
+            rows="3"
+            class="form-control"
+            [class.error]="planForm.get('description')?.invalid && planForm.get('description')?.touched"
+          ></textarea>
+          <div class="error-message" *ngIf="planForm.get('description')?.invalid && planForm.get('description')?.touched">
+            {{ getErrorMessage('description') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="durationInDays">Duration (Days)</label>
+          <input 
+            type="number" 
+            id="durationInDays" 
+            formControlName="durationInDays" 
+            placeholder="30"
+            class="form-control"
+            [class.error]="planForm.get('durationInDays')?.invalid && planForm.get('durationInDays')?.touched"
+          >
+          <div class="error-message" *ngIf="planForm.get('durationInDays')?.invalid && planForm.get('durationInDays')?.touched">
+            {{ getErrorMessage('durationInDays') }}
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="planForm.invalid || isLoading">
+            <span *ngIf="!isLoading">{{ editingPlan ? 'Update' : 'Add' }} Plan</span>
+            <span *ngIf="isLoading">Saving...</span>
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelForm()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Membership Plans List -->
+  <div class="plans-section">
+    <h2>Membership Plans</h2>
+    <div class="plans-grid" *ngIf="!isLoading; else loadingPlans">
+      <div class="plan-card" *ngFor="let plan of membershipPlans">
+        <div class="plan-header">
+          <h3>{{ plan.name }}</h3>
+          <span class="plan-price">${{ plan.price }}</span>
+        </div>
+        <div class="plan-details">
+          <p class="plan-description">{{ plan.description }}</p>
+          <div class="plan-meta">
+            <span class="duration">{{ plan.durationInDays }} days</span>
+            <span class="users-count">{{ getUsersCountForPlan(plan.id!) }} users</span>
+          </div>
+          
+          <!-- Enhanced Plan Statistics -->
+          <div class="plan-statistics" *ngIf="getUsersCountForPlan(plan.id!) > 0">
+            <div class="stat-row">
+              <span class="stat-label">Active:</span>
+              <span class="stat-value active">{{ getPlanStatistics(plan.id!).active }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Expired:</span>
+              <span class="stat-value expired">{{ getPlanStatistics(plan.id!).expired }}</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Revenue:</span>
+              <span class="stat-value revenue">Rs{{ getPlanStatistics(plan.id!).revenue.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="plan-actions">
+          <button class="btn btn-outline" (click)="editPlan(plan)">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="btn btn-danger" (click)="deletePlan(plan)">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #loadingPlans>
+      <div class="loading-state">
+        <p>Loading membership plans...</p>
+      </div>
+    </ng-template>
+
+    <div class="no-plans" *ngIf="!isLoading && membershipPlans.length === 0">
+      <p>No membership plans found. Create your first plan to get started.</p>
+    </div>
+  </div>
+
+  <!-- User Memberships Overview -->
+  <div class="memberships-section">
+    <h2>User Memberships Overview</h2>
+    <div class="memberships-table" *ngIf="userMemberships.length > 0; else noMemberships">
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Plan</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let membership of userMemberships">
+            <td>{{ membership.user.email }}</td>
+            <td>{{ membership.plan.name }}</td>
+            <td>{{ membership.startDate | date:'shortDate' }}</td>
+            <td>{{ membership.endDate | date:'shortDate' }}</td>
+            <td>
+              <span class="status" [class]="'status-' + (membership.status === 'ACTIVE' ? 'active' : 'expired')">
+                {{ membership.status === 'ACTIVE' ? 'Active' : 'Expired' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #noMemberships>
+      <div class="no-memberships">
+        <p>No user memberships found.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Navigation -->
+  <div class="navigation-section">
+    <button class="btn btn-secondary" (click)="navigateToAdminDashboard()">
+      <i class="fas fa-arrow-left"></i> Back to Admin Dashboard
+    </button>
+  </div>
+</div>

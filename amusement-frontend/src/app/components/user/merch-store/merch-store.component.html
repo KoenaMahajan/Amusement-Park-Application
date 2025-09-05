@@ -1,0 +1,15 @@
+<div class="merch-store">
+  <h2>Merchandise Store</h2>
+
+  <div *ngIf="isLoading">Loading store items...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div class="grid" *ngIf="!isLoading && !errorMessage">
+    <div class="card" *ngFor="let item of items">
+      <div class="name">{{ item.name }}</div>
+      <div class="price">₹{{ item.price | number: '1.2-2' }}</div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,58 @@
+<div class="rides-container">
+  <h2>Rides</h2>
+
+  <div class="filters">
+    <input type="text" placeholder="Search by name" [(ngModel)]="keyword" (keyup.enter)="load()" />
+    <select [(ngModel)]="thrillLevel">
+      <option value="">All Thrill Levels</option>
+      <option *ngFor="let tl of thrillLevels" [value]="tl">{{ tl }}</option>
+    </select>
+    <input type="number" placeholder="Suitable for age" [(ngModel)]="minAge" />
+    <select [(ngModel)]="operational">
+      <option value="">Any Status</option>
+      <option [ngValue]="true">Operational</option>
+      <option [ngValue]="false">Not Operational</option>
+    </select>
+    <button (click)="load()">Apply</button>
+    <button (click)="clearFilters()">Clear</button>
+  </div>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div class="ride-list">
+    <div class="ride-card" *ngFor="let ride of rides" [class.not-operational]="!ride.isOperational">
+      <img *ngIf="ride.photoUrl" [src]="ride.photoUrl" alt="{{ ride.name }}" />
+      <div class="content">
+        <div class="ride-header">
+          <h3><a [routerLink]="['/user/rides', ride.id]">{{ ride.name }}</a></h3>
+          <button 
+            class="favorite-btn" 
+            [class.favorited]="isFavorite(ride.id)"
+            (click)="toggleFavorite(ride)"
+            [title]="isFavorite(ride.id) ? 'Remove from favorites' : 'Add to favorites'">
+            {{ isFavorite(ride.id) ? '★' : '☆' }}
+          </button>
+        </div>
+        <p>{{ ride.description }}</p>
+        <div class="meta">
+          <span>Thrill: {{ ride.thrillLevel }}</span>
+          <span>Duration: {{ ride.durationMinutes }} min</span>
+          <span *ngIf="ride.minAge">Min age: {{ ride.minAge }}</span>
+          <span class="fav-count" title="Favorites">★ {{ ride.favoritesCount || 0 }}</span>
+          <span [class.badge]="true" [class.badge-green]="ride.isOperational" [class.badge-red]="!ride.isOperational">
+            {{ ride.isOperational ? 'Operational' : 'Closed' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="prevPage()" [disabled]="page === 0">Prev</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="page + 1 >= totalPages">Next</button>
+  </div>
+</div>
+
+

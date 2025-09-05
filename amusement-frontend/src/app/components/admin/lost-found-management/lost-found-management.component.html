@@ -1,0 +1,48 @@
+<div class="lf-admin">
+  <div class="header">
+    <h2>Lost & Found Management</h2>
+    <div class="filters">
+      <input type="date" [(ngModel)]="dateFilter" />
+      <button (click)="applyDateFilter()">Apply</button>
+      <button (click)="dateFilter=''; applyDateFilter()">Clear</button>
+    </div>
+  </div>
+
+  <div *ngIf="message" class="message">{{ message }}</div>
+  <div *ngIf="isLoading" class="loading">Loading...</div>
+
+  <table *ngIf="!isLoading && entries.length > 0" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Item</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Location</th>
+        <th>Reported By</th>
+        <th>Reported At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of entries">
+        <td>{{ r.id }}</td>
+        <td>{{ r.itemName }}</td>
+        <td>{{ r.description }}</td>
+        <td>{{ r.status }}</td>
+        <td>{{ r.location }}</td>
+        <td>{{ r.reportedBy }}</td>
+        <td>{{ r.reportedAt | date:'short' }}</td>
+        <td class="actions">
+          <button (click)="updateStatus(r.id, 'FOUND')">Mark Found</button>
+          <button (click)="updateStatus(r.id, 'RETURNED')">Mark Returned</button>
+          <button (click)="delete(r.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && entries.length === 0" class="empty">No entries found.</div>
+</div>
+
+

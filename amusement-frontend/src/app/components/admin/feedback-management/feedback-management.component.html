@@ -1,0 +1,44 @@
+<div class="feedback-admin">
+  <div class="header">
+    <h2>Feedback Management</h2>
+    <div class="filters">
+      <input type="date" [(ngModel)]="dateFilter" />
+      <button (click)="applyDateFilter()">Apply</button>
+      <button (click)="dateFilter=''; applyDateFilter()">Clear</button>
+    </div>
+  </div>
+
+  <div *ngIf="message" class="message">{{ message }}</div>
+  <div *ngIf="isLoading" class="loading">Loading...</div>
+
+  <table *ngIf="!isLoading && feedbackList.length > 0" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Ride</th>
+        <th>Cleanliness</th>
+        <th>Staff</th>
+        <th>Food</th>
+        <th>Comments</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let f of feedbackList">
+        <td>{{ f.id }}</td>
+        <td>{{ f.userName }}</td>
+        <td>{{ f.rideRating }}</td>
+        <td>{{ f.cleanlinessRating }}</td>
+        <td>{{ f.staffBehaviorRating }}</td>
+        <td>{{ f.foodQualityRating }}</td>
+        <td>{{ f.comments || '-' }}</td>
+        <td>{{ f.createdAt | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && feedbackList.length === 0" class="empty">No feedback found.</div>
+</div>
+
+

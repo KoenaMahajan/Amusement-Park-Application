@@ -1,0 +1,73 @@
+<div class="test-connection">
+  <div class="container">
+    <div class="connection-card">
+      <h1>Backend Connection Test</h1>
+      
+      <div class="status-section">
+        <div class="status-indicator" [ngClass]="{'connected': isConnected, 'disconnected': !isConnected && !isLoading}">
+          <div class="status-dot"></div>
+          <span class="status-text">{{ connectionStatus }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="loading">
+        <div class="spinner"></div>
+        <p>Testing connection to backend...</p>
+      </div>
+
+      <div *ngIf="!isLoading && !isConnected" class="error-section">
+        <div class="error-icon">⚠️</div>
+        <h3>Connection Failed</h3>
+        <p class="error-message">{{ errorMessage }}</p>
+        
+        <div class="troubleshooting">
+          <h4>Troubleshooting Steps:</h4>
+          <ul>
+            <li>Ensure your Spring Boot backend is running on port 8082</li>
+            <li>Check if the backend URL is correct</li>
+            <li>Verify CORS configuration in your backend</li>
+            <li>Check console for any error messages</li>
+          </ul>
+        </div>
+        
+        <button (click)="retryConnection()" class="btn btn-primary">
+          Retry Connection
+        </button>
+      </div>
+
+      <div *ngIf="!isLoading && isConnected" class="success-section">
+        <div class="success-icon">✅</div>
+        <h3>Connection Successful!</h3>
+        <p>Your backend is running and accessible.</p>
+        <p class="backend-url">Backend URL: <code>http://localhost:8082</code></p>
+        
+        <div class="api-status">
+          <h4>API Status:</h4>
+          <div class="api-item">
+            <span class="api-name">Membership Plans API:</span>
+            <span class="api-status-ok">✅ Working</span>
+          </div>
+          <div class="api-item">
+            <span class="api-name">Ticket Types API:</span>
+            <span class="api-status-ok">✅ Working</span>
+            <span class="api-count">({{ ticketTypesCount }} types available)</span>
+          </div>
+          <div class="api-item">
+            <span class="api-name">Tickets API:</span>
+            <span class="api-status-ok">✅ Working</span>
+            <span class="api-count">({{ ticketsCount }} tickets in system)</span>
+          </div>
+        </div>
+        
+        <div class="next-steps">
+          <h4>Next Steps:</h4>
+          <ul>
+            <li><a routerLink="/admin/tickets">Go to Admin Ticket Management</a></li>
+            <li><a routerLink="/user/tickets">Go to User Ticket Booking</a></li>
+            <li><a routerLink="/admin/dashboard">Go to Admin Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

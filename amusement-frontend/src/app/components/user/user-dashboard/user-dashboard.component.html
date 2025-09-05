@@ -1,0 +1,302 @@
+<div class="user-dashboard">
+  <div class="header">
+    <h1>User Dashboard</h1>
+    <button class="btn btn-secondary" (click)="navigateToHome()">Back to Home</button>
+  </div>
+
+  <!-- Message Display -->
+  <div *ngIf="message" class="message" [ngClass]="messageType">
+    {{ message }}
+  </div>
+
+  <!-- User Profile Section -->
+  <div class="section profile-section">
+    <div class="section-header">
+      <h2>👤 My Profile</h2>
+      <button 
+        class="btn btn-outline" 
+        (click)="toggleProfileEditing()"
+        [disabled]="isProfileLoading">
+        {{ isEditingProfile ? 'Cancel' : 'Edit Profile' }}
+      </button>
+    </div>
+
+    <div *ngIf="isProfileLoading" class="loading">Loading profile...</div>
+    
+    <div *ngIf="!isProfileLoading && userProfile" class="profile-content">
+      <div *ngIf="!isEditingProfile" class="profile-display">
+        <div class="profile-info">
+          <div class="info-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ userProfile.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Name:</span>
+            <span class="value" [ngClass]="userProfile.name ? 'set' : 'not-set'">
+              {{ userProfile.name || 'Not set yet' }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="label">Phone Number:</span>
+            <span class="value" [ngClass]="userProfile.phoneNumber ? 'set' : 'not-set'">
+              {{ userProfile.phoneNumber || 'Not set yet' }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="label">Role:</span>
+            <span class="value">{{ userProfile.role }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Verified:</span>
+            <span class="value" [ngClass]="userProfile.verified ? 'verified' : 'not-verified'">
+              {{ userProfile.verified ? '✅ Yes' : '❌ No' }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="profile-note" *ngIf="!userProfile.name || !userProfile.phoneNumber">
+          <p>💡 <strong>Complete your profile:</strong> Add your name and phone number to get the most out of your account.</p>
+        </div>
+      </div>
+
+      <div *ngIf="isEditingProfile" class="profile-edit">
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+          <div class="form-group">
+            <label for="name">Name <span class="optional">(Optional)</span></label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              placeholder="Enter your full name"
+              [class.error]="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
+            />
+            <div class="error-message" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+              <span *ngIf="profileForm.get('name')?.hasError('minlength')">Name must be at least 2 characters</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNumber">Phone Number <span class="optional">(Optional)</span></label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              formControlName="phoneNumber"
+              placeholder="Enter your phone number"
+              [class.error]="profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched"
+            />
+            <div class="error-message" *ngIf="profileForm.get('phoneNumber')?.invalid && profileForm.get('phoneNumber')?.touched">
+              <span *ngIf="profileForm.get('phoneNumber')?.hasError('pattern')">Please enter a valid phone number</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="profileForm.invalid || isProfileLoading">
+              <span *ngIf="!isProfileLoading">Save Changes</span>
+              <span *ngIf="isProfileLoading">Saving...</span>
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-secondary"
+              (click)="cancelProfileEdit()"
+              [disabled]="isProfileLoading">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket Booking Section -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🎟️ Book Tickets</h2>
+      <a class="btn btn-primary" [routerLink]="['/user/tickets']">Book Tickets</a>
+    </div>
+    <p>Book your tickets for an amazing day at the amusement park. Choose from various ticket types based on your membership level.</p>
+  </div>
+
+  <!-- Available Membership Plans -->
+  <div class="section">
+    <h2>Available Membership Plans</h2>
+    <div *ngIf="isLoading" class="loading">Loading plans...</div>
+    
+    <div *ngIf="!isLoading && membershipPlans.length === 0" class="no-data">
+      No membership plans available.
+    </div>
+
+    <div class="plans-grid" *ngIf="!isLoading && membershipPlans.length > 0">
+      <div class="plan-card" *ngFor="let plan of membershipPlans">
+        <div class="plan-header">
+          <h3>{{ plan.name }}</h3>
+          <span class="price">${{ plan.price }}</span>
+        </div>
+        <p class="description">{{ plan.description }}</p>
+        <div class="plan-details">
+          <span class="duration">{{ plan.durationInDays }} days</span>
+        </div>
+        <button 
+          class="btn btn-primary" 
+          (click)="subscribeToPlan(plan.id!)"
+          [disabled]="hasActiveMembership()">
+          {{ hasActiveMembership() ? 'Already Subscribed' : 'Subscribe' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Memberships -->
+  <div class="section">
+    <div class="section-header">
+      <h2>My Memberships</h2>
+      <div>
+        <button class="btn btn-outline" (click)="toggleMemberships()">
+          {{ showMemberships ? 'Hide' : 'Show' }} Memberships
+        </button>
+        <!-- <button class="btn btn-secondary" (click)="debugMembershipState()" style="margin-left: 8px;">
+          Debug State
+        </button> -->
+      </div>
+    </div>
+
+    <div *ngIf="showMemberships">
+      <div *ngIf="userMemberships.length === 0" class="no-data">
+        <p>You don't have any memberships yet.</p>
+      
+      </div>
+
+      <div *ngIf="userMemberships.length > 0" class="memberships-list">
+        <div class="membership-card" *ngFor="let membership of userMemberships; let i = index">
+          <div class="membership-info">
+            <h4>{{ membership.plan.name }}</h4>
+            <p class="status" [ngClass]="membership.status.toLowerCase()">
+              Status: {{ membership.status }}
+            </p>
+            <p>Start Date: {{ membership.startDate | date }}</p>
+            <p *ngIf="membership.endDate">End Date: {{ membership.endDate | date }}</p>
+            <!-- <p><small>Debug: Index {{ i }}, ID {{ membership.id }}</small></p> -->
+          </div>
+          
+          <div class="membership-actions">
+            <button 
+              *ngIf="membership.status === 'ACTIVE'"
+              class="btn btn-danger" 
+              (click)="cancelMembership()">
+              Cancel Membership
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Callout -->
+  <div class="section feedback-section">
+    <div class="section-header">
+      <h2>We value your feedback</h2>
+      <button class="btn btn-primary" (click)="navigateToFeedback()">Give Feedback</button>
+    </div>
+    <p class="feedback-note">Share your experience about rides, cleanliness, staff behavior, and food quality to help us improve.</p>
+  </div>
+
+  <!-- Previous Orders Section -->
+  <div class="section">
+    <div class="section-header">
+      <h2>📋 My Orders</h2>
+      <a class="btn btn-secondary" [routerLink]="['/user/orders']">View All Orders</a>
+    </div>
+    
+    <div *ngIf="isOrdersLoading" class="loading">Loading orders...</div>
+    
+    <div *ngIf="!isOrdersLoading && userOrders.length === 0" class="no-data">
+      <p>You haven't placed any orders yet.</p>
+      <a class="btn btn-primary" [routerLink]="['/user/store']">Start Shopping</a>
+    </div>
+
+    <div *ngIf="!isOrdersLoading && userOrders.length > 0">
+      <!-- Current Orders -->
+      <div *ngIf="getCurrentOrders().length > 0" class="orders-section">
+        <h3>🔄 Current Orders</h3>
+        <div class="orders-grid">
+          <div class="order-card current" *ngFor="let order of getCurrentOrders()">
+            <div class="order-header">
+              <span class="order-id">#{{ order.id }}</span>
+              <span class="status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+            </div>
+            <div class="order-details">
+              <p><strong>Pickup:</strong> {{ order.pickupLocation }}</p>
+              <p><strong>Total:</strong> Rs. {{ order.totalAmount | number:'1.2-2' }}</p>
+              <p><strong>Time:</strong> {{ order.orderTime | date:'short' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Previous Orders -->
+      <div *ngIf="getPreviousOrders().length > 0" class="orders-section">
+        <h3>✅ Previous Orders</h3>
+        <div class="orders-grid">
+          <div class="order-card previous" *ngFor="let order of getPreviousOrders().slice(0, 3)">
+            <div class="order-header">
+              <span class="order-id">#{{ order.id }}</span>
+              <span class="status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+            </div>
+            <div class="order-details">
+              <p><strong>Pickup:</strong> {{ order.pickupLocation }}</p>
+              <p><strong>Total:</strong> Rs. {{ order.totalAmount | number:'1.2-2' }}</p>
+              <p><strong>Time:</strong> {{ order.orderTime | date:'short' }}</p>
+            </div>
+          </div>
+        </div>
+        <p class="orders-note">Showing last 3 orders. <a [routerLink]="['/user/orders']">View all orders</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Favorites CTA -->
+  <div class="section">
+    <div class="section-header">
+      <h2>My Favorites</h2>
+      <a class="btn btn-secondary" [routerLink]="['/user/favorites']">View Favorites</a>
+    </div>
+    <p>Quick access to your saved rides.</p>
+  </div>
+
+  <!-- Combined Store CTA -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Shop Food & Merch</h2>
+      <a class="btn btn-secondary" [routerLink]="['/user/store']">Open Store</a>
+    </div>
+    <p>Browse food and merchandise in one place and add items to your cart.</p>
+  </div>
+
+  <!-- Rides CTA -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Explore Rides</h2>
+      <a class="btn btn-primary" [routerLink]="['/user/rides']">Browse Rides</a>
+    </div>
+    <p>See all rides, filter by thrill level, and check live status.</p>
+  </div>
+
+  
+
+  <!-- Issues Callout -->
+  <div class="section issues-section">
+    <div class="section-header">
+      <h2>Report an issue</h2>
+      <div>
+        <button class="btn btn-outline" (click)="navigateToReportIssue()">Report Issue</button>
+        <a class="btn btn-secondary" [routerLink]="['/user/chat']" style="margin-left:8px">Chat with Assistant</a>
+        <a class="btn btn-secondary" [routerLink]="['/user/lost-found/report']" style="margin-left:8px">Report Lost Item</a>
+        <a class="btn btn-secondary" [routerLink]="['/user/lost-found/my-reports']" style="margin-left:8px">My Reports</a>
+        <a class="btn btn-secondary" [routerLink]="['/user/lost-found/found']" style="margin-left:8px">Found Items</a>
+      </div>
+    </div>
+    <p class="issues-note">Found a problem? Let us know so our team can address it quickly.</p>
+  </div>
+</div>

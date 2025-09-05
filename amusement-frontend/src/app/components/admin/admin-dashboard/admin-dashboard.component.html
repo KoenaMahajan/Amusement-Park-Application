@@ -1,0 +1,226 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>🎢 Admin Dashboard</h1>
+    <p>Manage your amusement park operations</p>
+    <button class="btn btn-secondary" (click)="navigateToHome()">
+      ← Back to Home
+    </button>
+  </div>
+
+  <!-- Membership Statistics Overview -->
+  <div class="stats-overview" *ngIf="!isLoading">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <h3>Total Plans</h3>
+          <p class="stat-number">{{ membershipStats.totalPlans }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <h3>Total Users</h3>
+          <p class="stat-number">{{ membershipStats.totalUsers }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🎫</div>
+        <div class="stat-content">
+          <h3>Total Members</h3>
+          <p class="stat-number">{{ membershipStats.totalMembers }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <h3>Active Members</h3>
+          <p class="stat-number">{{ membershipStats.activeMembers }}</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+          <h3>Total Revenue</h3>
+          <p class="stat-number">${{ membershipStats.totalRevenue.toFixed(2) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Membership Plan -->
+  <div class="top-plan-section" *ngIf="getTopMembershipPlan() && !isLoading">
+    <div class="top-plan-card">
+      <div class="top-plan-header">
+        <h3>🏆 Most Popular Plan</h3>
+        <span class="popularity-badge">Most Subscribed</span>
+      </div>
+      <div class="top-plan-content">
+        <h4>{{ getTopMembershipPlan()?.name }}</h4>
+        <p class="plan-description">{{ getTopMembershipPlan()?.description }}</p>
+        <div class="plan-stats">
+          <span class="plan-price">${{ getTopMembershipPlan()?.price }}</span>
+          <span class="plan-duration">{{ getTopMembershipPlan()?.durationInDays }} days</span>
+          <span class="subscriber-count">{{ getUsersCountForPlan(getTopMembershipPlan()?.id!) }} subscribers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Membership Plans Summary -->
+  <div class="plans-summary" *ngIf="membershipPlans.length > 0 && !isLoading">
+    <h3>📋 Membership Plans Summary</h3>
+    <div class="plans-summary-grid">
+      <div class="plan-summary-card" *ngFor="let plan of membershipPlans">
+        <div class="plan-summary-header">
+          <h4>{{ plan.name }}</h4>
+          <span class="plan-price">${{ plan.price }}</span>
+        </div>
+        <div class="plan-summary-stats">
+          <span class="subscribers">{{ getUsersCountForPlan(plan.id!) }} subscribers</span>
+          <span class="duration">{{ plan.durationInDays }} days</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-grid">
+    <div class="admin-card" (click)="navigateToUserManagement()">
+      <div class="card-icon">👥</div>
+      <h3>User Management</h3>
+      <p>Manage user accounts, view registrations, and handle user data</p>
+      <div class="card-stats">
+        <span class="stat">Total Users: {{ membershipStats.totalUsers }}</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToMembershipManagement()">
+      <div class="card-icon">🎫</div>
+      <h3>Membership Management</h3>
+      <p>Manage membership plans, view subscriptions, and handle renewals</p>
+      <div class="card-stats">
+        <span class="stat">Active Plans: {{ membershipStats.totalPlans }}</span>
+        <span class="stat">Total Members: {{ membershipStats.totalMembers }}</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToTicketManagement()">
+      <div class="card-icon">🎟️</div>
+      <h3>Ticket Management</h3>
+      <p>Manage ticket types, view bookings, and handle ticket operations</p>
+      <div class="card-stats">
+        <span class="stat">Go to tickets</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToFeedbackManagement()">
+      <div class="card-icon">💬</div>
+      <h3>Feedback Management</h3>
+      <p>View all feedback and filter by date</p>
+      <div class="card-stats">
+        <span class="stat">Go to feedback</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToIssueManagement()">
+      <div class="card-icon">🛠️</div>
+      <h3>Issue Management</h3>
+      <p>View reported issues and update status</p>
+      <div class="card-stats">
+        <span class="stat">Go to issues</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToOrders()">
+      <div class="card-icon">🧾</div>
+      <h3>Order Management</h3>
+      <p>View and manage orders</p>
+      <div class="card-stats">
+        <span class="stat">Go to orders</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToFoodManagement()">
+      <div class="card-icon">🍔</div>
+      <h3>Food Management</h3>
+      <p>Manage menu, add new items</p>
+      <div class="card-stats">
+        <span class="stat">Go to food</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToRideManagement()">
+      <div class="card-icon">🎢</div>
+      <h3>Ride Management</h3>
+      <p>Create, edit, and manage rides</p>
+      <div class="card-stats">
+        <span class="stat">Go to rides</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToFavoritesManagement()">
+      <div class="card-icon">⭐</div>
+      <h3>Favorites Management</h3>
+      <p>View favorites statistics and manage user favorites</p>
+      <div class="card-stats">
+        <span class="stat">Go to favorites</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToMaintenanceManagement()">
+      <div class="card-icon">🧰</div>
+      <h3>Maintenance</h3>
+      <p>Schedule and manage maintenance alerts</p>
+      <div class="card-stats">
+        <span class="stat">Go to maintenance</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToChatbotManagement()">
+      <div class="card-icon">🤖</div>
+      <h3>Chatbot Management</h3>
+      <p>Manage chatbot keywords and responses</p>
+      <div class="card-stats">
+        <span class="stat">Go to chatbot</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToMerchManagement()">
+      <div class="card-icon">🛍️</div>
+      <h3>Merchandise Management</h3>
+      <p>Add, list and delete merchandise items</p>
+      <div class="card-stats">
+        <span class="stat">Go to merchandise</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToFeedbackAnalytics()">
+      <div class="card-icon">📈</div>
+      <h3>Feedback Analytics</h3>
+      <p>View average ratings and counts</p>
+      <div class="card-stats">
+        <span class="stat">Go to analytics</span>
+      </div>
+    </div>
+
+    <div class="admin-card" (click)="navigateToLostFoundManagement()">
+      <div class="card-icon">🧳</div>
+      <h3>Lost & Found</h3>
+      <p>Manage all lost & found reports</p>
+      <div class="card-stats">
+        <span class="stat">Go to lost & found</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>Loading membership data...</p>
+  </div>
+</div>

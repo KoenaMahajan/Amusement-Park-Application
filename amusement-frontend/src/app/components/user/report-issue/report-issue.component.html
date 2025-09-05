@@ -1,0 +1,23 @@
+<div class="report-issue">
+  <h2>Report an Issue</h2>
+
+  <div *ngIf="message" class="message" [ngClass]="messageType">{{ message }}</div>
+
+  <form [formGroup]="issueForm" (ngSubmit)="submit()">
+    <div class="form-row">
+      <label for="subject">Subject</label>
+      <input id="subject" type="text" formControlName="subject" placeholder="E.g. Ride malfunction" />
+    </div>
+
+    <div class="form-row">
+      <label for="description">Description</label>
+      <textarea id="description" rows="5" formControlName="description" placeholder="Describe the issue..."></textarea>
+    </div>
+
+    <button type="submit" [disabled]="isSubmitting || issueForm.invalid">
+      {{ isSubmitting ? 'Submitting...' : 'Report Issue' }}
+    </button>
+  </form>
+</div>
+
+

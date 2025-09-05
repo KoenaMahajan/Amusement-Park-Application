@@ -1,0 +1,72 @@
+<div class="user-orders">
+  <h2>My Orders</h2>
+
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <form [formGroup]="orderForm" (ngSubmit)="placeOrder()" class="order-form">
+    <div class="row">
+      <label>Pickup location</label>
+      <select formControlName="pickupLocation">
+        <option value="" disabled>Select a location</option>
+        <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label>Coupon code (optional)</label>
+      <input type="text" formControlName="couponCode" placeholder="DISCOUNT10" />
+    </div>
+
+    <div class="items" formArrayName="itemList">
+      <div class="items-header">
+        <label>Items (prefilled from cart)</label>
+        <a class="link" [routerLink]="['/user/store']">Add more in Store</a>
+      </div>
+      <table class="table" *ngIf="itemList.length">
+        <thead>
+          <tr>
+            <th>Item ID</th>
+            <th>Type</th>
+            <th>Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let group of itemList.controls; let i = index" [formGroupName]="i">
+            <td>{{ group.value.itemId }}</td>
+            <td>{{ group.value.itemType }}</td>
+            <td>{{ group.value.quantity }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="!itemList.length">No items in order. Go to Store to add.</div>
+    </div>
+
+    <button class="submit" type="submit" [disabled]="orderForm.invalid || isLoading">Place Order</button>
+  </form>
+
+  <h3>Previous Orders</h3>
+  <table *ngIf="orders.length" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Pickup</th>
+        <th>Total</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of orders">
+        <td>{{ o.id }}</td>
+        <td>{{ o.status }}</td>
+        <td>{{ o.pickupLocation }}</td>
+        <td>Rs. {{ o.totalAmount | number: '1.2-2' }}</td>
+        <td>{{ o.orderTime | date:'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+

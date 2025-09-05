@@ -1,0 +1,38 @@
+<div class="chatbot-admin">
+  <h2>Chatbot Keywords</h2>
+  <div *ngIf="message" class="message">{{ message }}</div>
+
+  <div class="add-form">
+    <input [(ngModel)]="newKeyword.keyword" placeholder="Keyword" />
+    <input [(ngModel)]="newKeyword.response" placeholder="Response" />
+    <button (click)="addKeyword()">Add</button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">Loading...</div>
+
+  <table *ngIf="!isLoading && keywords.length > 0" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Keyword</th>
+        <th>Response</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let k of keywords">
+        <td>{{ k.id }}</td>
+        <td><input [(ngModel)]="k.keyword" /></td>
+        <td><input [(ngModel)]="k.response" /></td>
+        <td>
+          <button (click)="updateKeyword(k)">Update</button>
+          <button (click)="deleteKeyword(k.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && keywords.length === 0" class="empty">No keywords found.</div>
+</div>
+
+

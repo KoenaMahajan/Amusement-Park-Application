@@ -1,0 +1,29 @@
+<div class="analytics">
+  <h2>Feedback Analytics</h2>
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="!isLoading && data" class="grid">
+    <div class="card">
+      <div class="label">Average Ride Rating</div>
+      <div class="value">{{ data.averageRideRating | number:'1.1-2' }}</div>
+    </div>
+    <div class="card">
+      <div class="label">Average Cleanliness Rating</div>
+      <div class="value">{{ data.averageCleanlinessRating | number:'1.1-2' }}</div>
+    </div>
+    <div class="card">
+      <div class="label">Average Staff Behavior Rating</div>
+      <div class="value">{{ data.averageStaffBehaviorRating | number:'1.1-2' }}</div>
+    </div>
+    <div class="card">
+      <div class="label">Average Food Quality Rating</div>
+      <div class="value">{{ data.averageFoodQualityRating | number:'1.1-2' }}</div>
+    </div>
+    <div class="card">
+      <div class="label">Total Feedback</div>
+      <div class="value">{{ data.totalFeedbackCount }}</div>
+    </div>
+  </div>
+</div>
+
+

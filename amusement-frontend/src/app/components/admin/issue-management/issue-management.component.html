@@ -1,0 +1,51 @@
+<div class="issues-admin">
+  <div class="header">
+    <h2>Issues</h2>
+    <div class="filters">
+      <select [(ngModel)]="statusFilter">
+        <option [ngValue]="''">All</option>
+        <option *ngFor="let s of statuses" [ngValue]="s">{{ s }}</option>
+      </select>
+      <button (click)="applyStatusFilter()">Apply</button>
+      <button (click)="statusFilter=''; applyStatusFilter()">Clear</button>
+    </div>
+  </div>
+
+  <div *ngIf="message" class="message">{{ message }}</div>
+  <div *ngIf="isLoading" class="loading">Loading...</div>
+
+  <table *ngIf="!isLoading && issues.length > 0" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Subject</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Reported By</th>
+        <th>Created At</th>
+        <th>Resolved At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let issue of issues">
+        <td>{{ issue.id }}</td>
+        <td>{{ issue.subject }}</td>
+        <td>{{ issue.description }}</td>
+        <td>{{ issue.status }}</td>
+        <td>{{ issue.reportedBy }}</td>
+        <td>{{ issue.createdAt | date:'short' }}</td>
+        <td>{{ issue.resolvedAt ? (issue.resolvedAt | date:'short') : '-' }}</td>
+        <td class="actions">
+          <button (click)="updateStatus(issue.id, 'IN_PROGRESS')" [disabled]="issue.status==='IN_PROGRESS'">In Progress</button>
+          <button (click)="updateStatus(issue.id, 'RESOLVED')" [disabled]="issue.status==='RESOLVED'">Resolve</button>
+          <button (click)="updateStatus(issue.id, 'CLOSED')" [disabled]="issue.status==='CLOSED'">Close</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && issues.length === 0" class="empty">No issues found.</div>
+</div>
+
+

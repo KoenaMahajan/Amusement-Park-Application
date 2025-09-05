@@ -1,0 +1,376 @@
+<div class="ticket-management-container">
+  <div class="ticket-management-header">
+    <h1>🎫 Ticket Management</h1>
+    <p>Manage ticket types and view all ticket bookings</p>
+    <button class="btn btn-secondary" (click)="navigateToAdminDashboard()">
+      ← Back to Admin Dashboard
+    </button>
+  </div>
+
+  <!-- Message Display -->
+  <div *ngIf="message" class="message" [ngClass]="messageType">
+    {{ message }}
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab-navigation">
+    <button 
+      class="tab-button" 
+      [class.active]="activeTab === 'ticket-types'"
+      (click)="setActiveTab('ticket-types')">
+      🎫 Ticket Types
+    </button>
+    <button 
+      class="tab-button" 
+      [class.active]="activeTab === 'tickets'"
+      (click)="setActiveTab('tickets')">
+      📋 All Tickets
+    </button>
+  </div>
+
+  <!-- Ticket Types Tab -->
+  <div *ngIf="activeTab === 'ticket-types'" class="tab-content">
+    <!-- Statistics Overview -->
+    <div class="stats-overview" *ngIf="!isLoading">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🎫</div>
+          <div class="stat-content">
+            <h3>Total Ticket Types</h3>
+            <p class="stat-number">{{ ticketTypes.length }}</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <h3>Paid Tickets</h3>
+            <p class="stat-number">{{ getPaidTicketsCount() }}</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-content">
+            <h3>Total Revenue</h3>
+            <p class="stat-number">${{ getTotalRevenue().toFixed(2) }}</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-content">
+            <h3>Pending Tickets</h3>
+            <p class="stat-number">{{ getPendingTicketsCount() }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Ticket Type Form -->
+    <div class="form-section" *ngIf="showAddForm || editingTicketType">
+      <div class="form-header">
+        <h3>{{ editingTicketType ? 'Edit' : 'Add' }} Ticket Type</h3>
+        <button class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+      </div>
+      
+      <form [formGroup]="ticketTypeForm" (ngSubmit)="onSubmitTicketType()" class="ticket-type-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name *</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              placeholder="Enter ticket type name"
+              [class.error]="ticketTypeForm.get('name')?.invalid && ticketTypeForm.get('name')?.touched"
+            />
+            <div class="error-message" *ngIf="ticketTypeForm.get('name')?.invalid && ticketTypeForm.get('name')?.touched">
+              {{ getErrorMessage('name') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="price">Price *</label>
+            <input
+              type="number"
+              id="price"
+              formControlName="price"
+              placeholder="Enter price"
+              step="0.01"
+              [class.error]="ticketTypeForm.get('price')?.invalid && ticketTypeForm.get('price')?.touched"
+            />
+            <div class="error-message" *ngIf="ticketTypeForm.get('price')?.invalid && ticketTypeForm.get('price')?.touched">
+              {{ getErrorMessage('price') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Enter ticket type description"
+            rows="3"
+            [class.error]="ticketTypeForm.get('description')?.invalid && ticketTypeForm.get('description')?.touched"
+          ></textarea>
+          <div class="error-message" *ngIf="ticketTypeForm.get('description')?.invalid && ticketTypeForm.get('description')?.touched">
+            {{ getErrorMessage('description') }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="validityDays">Validity Days *</label>
+            <input
+              type="number"
+              id="validityDays"
+              formControlName="validityDays"
+              placeholder="Enter validity days"
+              [class.error]="ticketTypeForm.get('validityDays')?.invalid && ticketTypeForm.get('validityDays')?.touched"
+            />
+            <div class="error-message" *ngIf="ticketTypeForm.get('validityDays')?.invalid && ticketTypeForm.get('validityDays')?.touched">
+              {{ getErrorMessage('validityDays') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="isVip">VIP Status</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" formControlName="isVip" />
+                <span class="checkmark"></span>
+                VIP Ticket
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="ticketTypeForm.invalid">
+            {{ editingTicketType ? 'Update' : 'Add' }} Ticket Type
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Add New Ticket Type Button -->
+    <div class="actions-section" *ngIf="!showAddForm && !editingTicketType">
+      <button class="btn btn-primary" (click)="showAddTicketTypeForm()">
+        ➕ Add New Ticket Type
+      </button>
+    </div>
+
+    <!-- Ticket Types List -->
+    <div class="ticket-types-section" *ngIf="!isLoading">
+      <h3>Available Ticket Types</h3>
+      
+      <div *ngIf="ticketTypes.length === 0" class="no-data">
+        No ticket types available. Add your first ticket type above.
+      </div>
+
+      <div class="ticket-types-grid" *ngIf="ticketTypes.length > 0">
+        <div class="ticket-type-card" *ngFor="let ticketType of ticketTypes">
+          <div class="ticket-type-header">
+            <h4>{{ ticketType.name }}</h4>
+            <span class="price">${{ ticketType.price }}</span>
+          </div>
+          
+          <p class="description">{{ ticketType.description }}</p>
+          
+          <div class="ticket-type-details">
+            <span class="validity-days">{{ ticketType.validityDays }} day(s) validity</span>
+            <span class="vip-status" [ngClass]="ticketType.isVip ? 'vip' : 'regular'">
+              {{ ticketType.isVip ? 'VIP' : 'Regular' }}
+            </span>
+          </div>
+
+          <div class="ticket-type-stats">
+            <span class="stat">Total Bookings: {{ getTicketsCountForType(ticketType.ticketTypeId!) }}</span>
+            <span class="stat">Revenue: ${{ getTicketTypeStatistics(ticketType.ticketTypeId!).revenue.toFixed(2) }}</span>
+          </div>
+
+          <div class="ticket-type-actions">
+            <button class="btn btn-outline" (click)="editTicketType(ticketType)">
+              ✏️ Edit
+            </button>
+            <button class="btn btn-danger" (click)="deleteTicketType(ticketType)">
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Tickets Tab -->
+  <div *ngIf="activeTab === 'tickets'" class="tab-content">
+    <div class="tickets-section">
+      <h3>All Ticket Bookings</h3>
+      
+      <!-- Add/Edit Ticket Form -->
+      <div class="form-section" *ngIf="showTicketForm || editingTicket">
+        <div class="form-header">
+          <h3>{{ editingTicket ? 'Edit' : 'Add' }} Ticket</h3>
+          <button class="btn btn-secondary" (click)="cancelForm()">Cancel</button>
+        </div>
+        
+        <form [formGroup]="ticketForm" (ngSubmit)="onSubmitTicket()" class="ticket-type-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="userId">User ID *</label>
+              <input
+                type="number"
+                id="userId"
+                formControlName="userId"
+                placeholder="Enter user ID"
+                [class.error]="ticketForm.get('userId')?.invalid && ticketForm.get('userId')?.touched"
+              />
+              <div class="error-message" *ngIf="ticketForm.get('userId')?.invalid && ticketForm.get('userId')?.touched">
+                {{ getTicketErrorMessage('userId') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="ticketTypeId">Ticket Type *</label>
+              <select id="ticketTypeId" formControlName="ticketTypeId" (change)="onTicketTypeChange()"
+                [class.error]="ticketForm.get('ticketTypeId')?.invalid && ticketForm.get('ticketTypeId')?.touched">
+                <option value="" disabled>Select ticket type</option>
+                <option *ngFor="let type of ticketTypes" [value]="type.ticketTypeId">{{ type.name }}</option>
+              </select>
+              <div class="error-message" *ngIf="ticketForm.get('ticketTypeId')?.invalid && ticketForm.get('ticketTypeId')?.touched">
+                {{ getTicketErrorMessage('ticketTypeId') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="validFrom">Valid From *</label>
+              <input
+                type="date"
+                id="validFrom"
+                formControlName="validFrom"
+                [class.error]="ticketForm.get('validFrom')?.invalid && ticketForm.get('validFrom')?.touched"
+              />
+              <div class="error-message" *ngIf="ticketForm.get('validFrom')?.invalid && ticketForm.get('validFrom')?.touched">
+                {{ getTicketErrorMessage('validFrom') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="totalAmount">Total Amount *</label>
+              <input
+                type="number"
+                id="totalAmount"
+                formControlName="totalAmount"
+                step="0.01"
+                placeholder="Enter amount"
+                [class.error]="ticketForm.get('totalAmount')?.invalid && ticketForm.get('totalAmount')?.touched"
+              />
+              <div class="error-message" *ngIf="ticketForm.get('totalAmount')?.invalid && ticketForm.get('totalAmount')?.touched">
+                {{ getTicketErrorMessage('totalAmount') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="paymentStatus">Payment Status *</label>
+              <select id="paymentStatus" formControlName="paymentStatus">
+                <option *ngFor="let status of paymentStatuses" [value]="status">{{ status }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="paymentMode">Payment Mode *</label>
+              <select id="paymentMode" formControlName="paymentMode">
+                <option *ngFor="let mode of paymentModes" [value]="mode">{{ mode }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="ticketForm.invalid">
+              {{ editingTicket ? 'Update' : 'Add' }} Ticket
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Add New Ticket Button -->
+      <div class="actions-section" *ngIf="!showTicketForm && !editingTicket">
+        <button class="btn btn-primary" (click)="showAddTicketForm()">
+          ➕ Add New Ticket
+        </button>
+      </div>
+      
+      <div *ngIf="tickets.length === 0" class="no-data">
+        No tickets have been booked yet.
+      </div>
+
+      <div class="tickets-list" *ngIf="tickets.length > 0">
+        <div class="ticket-card" *ngFor="let ticket of tickets">
+          <div class="ticket-header">
+            <h4>{{ ticket.ticketType.name }}</h4>
+            <span class="ticket-code">{{ ticket.ticketCode }}</span>
+          </div>
+          
+          <div class="ticket-info">
+            <div class="info-row">
+              <span class="label">User ID:</span>
+              <span class="value">{{ ticket.userId }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Purchase Date:</span>
+              <span class="value">{{ ticket.purchaseDate | date }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Valid From:</span>
+              <span class="value">{{ ticket.validFrom | date }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Valid To:</span>
+              <span class="value">{{ ticket.validTo | date }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Total Amount:</span>
+              <span class="value price">${{ ticket.totalAmount.toFixed(2) }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Payment Status:</span>
+              <span class="status" [ngClass]="getStatusClass(ticket.paymentStatus)">
+                {{ ticket.paymentStatus }}
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="label">Payment Mode:</span>
+              <span class="value">{{ ticket.paymentMode }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Invoice ID:</span>
+              <span class="value">{{ ticket.invoiceId }}</span>
+            </div>
+          </div>
+          <div class="ticket-actions">
+            <button class="btn btn-outline" (click)="editTicket(ticket)">✏️ Edit</button>
+            <button class="btn btn-danger" (click)="deleteTicket(ticket)">🗑️ Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>Loading ticket data...</p>
+  </div>
+</div>

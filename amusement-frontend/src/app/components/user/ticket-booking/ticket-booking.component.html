@@ -1,0 +1,203 @@
+<div class="ticket-booking-container">
+  <div class="ticket-booking-header">
+    <h1>🎫 Ticket Booking</h1>
+    <p>Book your tickets for an amazing day at the amusement park</p>
+    <button class="btn btn-secondary" (click)="navigateToUserDashboard()">
+      ← Back to User Dashboard
+    </button>
+  </div>
+
+  <!-- Message Display -->
+  <div *ngIf="message" class="message" [ngClass]="messageType">
+    {{ message }}
+  </div>
+
+  <!-- Available Ticket Types -->
+  <div class="ticket-types-section" *ngIf="!isLoading">
+    <h2>Available Ticket Types</h2>
+    
+    <div *ngIf="ticketTypes.length === 0" class="no-data">
+      No ticket types available at the moment.
+    </div>
+
+    <div class="ticket-types-grid" *ngIf="ticketTypes.length > 0">
+      <div class="ticket-type-card" *ngFor="let ticketType of ticketTypes">
+        <div class="ticket-type-header">
+          <h3>{{ ticketType.name }}</h3>
+          <span class="price">${{ ticketType.price }}</span>
+        </div>
+        
+        <p class="description">{{ ticketType.description }}</p>
+        
+        <div class="ticket-type-details">
+          <span class="vip-status" [ngClass]="ticketType.isVip ? 'vip' : 'regular'">
+            {{ ticketType.isVip ? 'VIP Ticket' : 'Regular Ticket' }}
+          </span>
+          <span class="validity-days">{{ ticketType.validityDays }} day(s) validity</span>
+        </div>
+
+        <div class="ticket-type-actions">
+          <button 
+            class="btn btn-primary" 
+            (click)="showBookingFormForType(ticketType)"
+            [disabled]="!canBookTicketType(ticketType)">
+            {{ canBookTicketType(ticketType) ? 'Book Now' : 'Not Available' }}
+          </button>
+          
+          <div class="ticket-status" *ngIf="!canBookTicketType(ticketType)">
+            <span class="status-message">
+              ⚠️ {{ getMembershipStatus(ticketType).status }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Form Modal -->
+  <div class="booking-modal" *ngIf="showBookingForm && selectedTicketType">
+    <div class="booking-modal-content">
+      <div class="booking-modal-header">
+        <h3>Book {{ selectedTicketType.name }}</h3>
+        <button class="close-btn" (click)="cancelBooking()">×</button>
+      </div>
+      
+      <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="booking-form">
+        <div class="form-group">
+          <label for="visitDate">Visit Date *</label>
+          <input
+            type="date"
+            id="visitDate"
+            formControlName="visitDate"
+            [min]="getMinVisitDate()"
+            [class.error]="bookingForm.get('visitDate')?.invalid && bookingForm.get('visitDate')?.touched"
+          />
+          <div class="error-message" *ngIf="bookingForm.get('visitDate')?.invalid && bookingForm.get('visitDate')?.touched">
+            {{ getErrorMessage('visitDate') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">Quantity *</label>
+          <input
+            type="number"
+            id="quantity"
+            formControlName="quantity"
+            min="1"
+            max="10"
+            [class.error]="bookingForm.get('quantity')?.invalid && bookingForm.get('quantity')?.touched"
+          />
+          <div class="error-message" *ngIf="bookingForm.get('quantity')?.invalid && bookingForm.get('quantity')?.touched">
+            {{ getErrorMessage('quantity') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="paymentMode">Payment Mode *</label>
+          <select
+            id="paymentMode"
+            formControlName="paymentMode"
+            [class.error]="bookingForm.get('paymentMode')?.invalid && bookingForm.get('paymentMode')?.touched"
+          >
+            <option value="CARD">Credit/Debit Card</option>
+            <option value="UPI">UPI</option>
+            <option value="WALLET">Digital Wallet</option>
+            <option value="CASH">Cash</option>
+          </select>
+          <div class="error-message" *ngIf="bookingForm.get('paymentMode')?.invalid && bookingForm.get('paymentMode')?.touched">
+            {{ getErrorMessage('paymentMode') }}
+          </div>
+        </div>
+
+        <div class="price-summary">
+          <div class="price-row">
+            <span>Price per ticket:</span>
+            <span>${{ selectedTicketType.price }}</span>
+          </div>
+          <div class="price-row">
+            <span>Quantity:</span>
+            <span>{{ bookingForm.get('quantity')?.value || 1 }}</span>
+          </div>
+          <div class="price-row total">
+            <span>Total:</span>
+            <span>${{ getTotalPrice(selectedTicketType, bookingForm.get('quantity')?.value || 1).toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="bookingForm.invalid || isLoading">
+            <span *ngIf="!isLoading">Confirm Booking</span>
+            <span *ngIf="isLoading">Booking...</span>
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            (click)="cancelBooking()"
+            [disabled]="isLoading">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- User's Booked Tickets -->
+  <div class="user-tickets-section">
+    <h2>My Booked Tickets</h2>
+    
+    <div *ngIf="userTickets.length === 0" class="no-data">
+      You haven't booked any tickets yet.
+    </div>
+
+    <div class="user-tickets-list" *ngIf="userTickets.length > 0">
+      <div class="user-ticket-card" *ngFor="let ticket of userTickets">
+        <div class="user-ticket-header">
+          <h4>{{ ticket.ticketType.name }}</h4>
+          <span class="ticket-code">{{ ticket.ticketCode }}</span>
+        </div>
+        
+        <div class="user-ticket-info">
+          <div class="info-row">
+            <span class="label">Purchase Date:</span>
+            <span class="value">{{ ticket.purchaseDate | date }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Valid From:</span>
+            <span class="value">{{ ticket.validFrom | date }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Valid To:</span>
+            <span class="value">{{ ticket.validTo | date }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Total Amount:</span>
+            <span class="value price">${{ ticket.totalAmount.toFixed(2) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Payment Status:</span>
+            <span class="status" [ngClass]="getStatusClass(ticket.paymentStatus)">
+              {{ ticket.paymentStatus }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="label">Payment Mode:</span>
+            <span class="value">{{ ticket.paymentMode }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Invoice ID:</span>
+            <span class="value">{{ ticket.invoiceId }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>Loading ticket data...</p>
+  </div>
+</div>
